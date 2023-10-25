@@ -1,0 +1,14 @@
+.profileTabBtns{
+    gap: 30px;
+    border:none;
+
+}
+
+.profileTabBtns button:hover{
+color : rgb(63, 52, 127);
+
+}
+
+.profileTabBtns{
+    display:flex;
+}
