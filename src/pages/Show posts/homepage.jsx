@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../../../SupabaseClient';
-import Post from './posst';
+import Post from './post';
 
 function ShowPost() {
   const [posts, setPosts] = useState([]);
