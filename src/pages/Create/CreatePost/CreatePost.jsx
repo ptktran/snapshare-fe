@@ -69,7 +69,7 @@ const CreatePost = () => {
     {/** Insert post into database */}
     const { data, error } = await supabase
     .from('posts')
-    .insert([{ caption: caption }])
+    .insert([{ user_id: user.id , caption: caption }])
     .select()
 
     if (error) {
