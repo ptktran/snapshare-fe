@@ -11,7 +11,9 @@ const CreatePost = () => {
 
   const [files, setFiles] = useState([])
   const [caption, setCaption] = useState('')
-  const errorMessages = [];
+  const errorMessages = []
+  var urlList = []
+
   var postId = 0
 
   {/** Drag and Drop functionality */}
@@ -67,32 +69,55 @@ const CreatePost = () => {
     }
     
     {/** Insert post into database */}
-    const { data, error } = await supabase
+    const { data: postData, error: postError } = await supabase
     .from('posts')
     .insert([{ user_id: user.id , caption: caption }])
     .select()
 
-    if (error) {
-      console.log(error)
+    if (postError) {
+      console.log(postError)
     }
-    if (data) {
-      postId = data[0].post_id
+    if (postData) {
+      postId = postData[0].post_id
       navigate('/')
     }
 
     {/** Upload files to storage */}
-    files.forEach( async (file) => {
-      const { error } = await supabase.storage
+    for (let index = 0; index < files.length; index++) {
+      const file = files[index];
+      const { data: uploadData, error: uploadError } = await supabase.storage
         .from(`Upload/${user.id}/${postId}`)
         .upload(`./${file.name}`, file)
       
-      if (error) {
-        console.log(error)
+      if (uploadError) {
+        console.log(uploadError)
       }
-    })
+
+      {/** If file uploaded successfully, get file url from storage */}
+      if (uploadData) {
+        const { data: urlData } = await supabase
+        .storage
+        .from('Upload')
+        .getPublicUrl(`${user.id}/${postId}/${file.name}`)
+        urlList.push(urlData.publicUrl)
+
+        {/** If this is the last file in the loop, update post with the list of file urls */}
+        if (index === (files.length - 1)) {
+          const { error } = await supabase
+            .from('posts')
+            .update([{ file_url: urlList }])
+            .eq('post_id', postId)
+
+          if (error) {
+            console.log(error)
+          }
+        }
+      }
+    } 
 
     setFiles([])
     setCaption('')
+    urlList = []
   }
 
   return (
