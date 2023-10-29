@@ -1,4 +1,16 @@
 /* Content.css */
+@media (min-width: 600px) {
+    .page-container {
+        margin-left: 16rem;
+    }
+}
+
+@media (min-width: 300) {
+    .page-container {
+        margin-left: 0;
+    }
+}
+
 .page-container {
     height: 100vh; 
     display: flex;

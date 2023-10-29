@@ -5,9 +5,9 @@ import Login from "../Login/Login";
 export default function Home() {
   return (
     <>
-      <div>
+      <main className="ml-0 md:ml-64">
         <h1>No posts to show</h1>
-      </div>
+      </main>
     </>
   )
 }
