@@ -114,7 +114,6 @@ export default function Content() {
   const [posts, setPosts] = useState([]);
   const [post2, setPost2] = useState([]);
   const [post3, setPost3] = useState([]);
-  var slides = useState([]);
 
   console.log(image_url);
   console.log(caption);
@@ -216,10 +215,40 @@ export default function Content() {
   const bucket_url = "https://cmknbeginwvrwzxmgdgy.supabase.co/storage/v1/object/public/Upload/"
   const bucket_url2 = "https://cmknbeginwvrwzxmgdgy.supabase.co/storage/v1/object/public/Profile/"
 
+  var slides;
+
   //image carousel
   function getSlides(fileURL){   
     slides = fileURL;    
   }
+
+  //move between images/videos
+  const [curr, setCurr] = useState(0);
+
+  const prev = () => {
+    //if first slide, go to last, else forward
+    setCurr((curr) => (curr == 0 ? (slides.length - 1) : (curr - 1)));
+  }
+    
+
+  const next = () => {
+    //if last slide, go to first, else next
+    setCurr((curr) => (curr == (slides.length - 1) ? (0) : (curr + 1)));
+  }
+
+  //determine if image or video
+  function isImageLink(url) {
+    const imageExtensions = /\.(jpg|jpeg|png|gif|bmp|webp|svg|tiff)$/i;
+    return imageExtensions.test(url);
+  }
+
+  function isVideoLink(url) {
+      const videoExtensions = /\.(mp4|webm|ogg|avi|mkv|mov)$/i;
+      return videoExtensions.test(url);
+  }
+
+
+    
 
   // Formatting + Buttons
   return (
@@ -332,9 +361,19 @@ export default function Content() {
           <div class="posts">
             {posts.map((post) => (
               <div key={post.post_id}>
-                <div class="container" onClick={()=>{openImg(post.post_id)}}>
+                <div class="post_container" onClick={()=>{openImg(post.post_id)}}>
                   <button>
-                    <img src={post.file_url[0]}  />
+                    {post.file_url ? (
+                        isImageLink(post.file_url[0]) ? (
+                            <img src={post.file_url[0]} alt="Image" class="post_content"/>
+                        ) : isVideoLink(post.file_url[0]) ? (
+                          <video src={post.file_url[0]} autoPlay muted loop class="post_content"/>
+                        ) : (
+                            <h1 class="post_content" >No media</h1>
+                        )
+                    ) : (
+                        <h1 class="post_content" >No media</h1>
+                    )}                    
                   </button> 
                 </div>   
                         
@@ -363,15 +402,32 @@ export default function Content() {
                     </div>
                     
                     <div class="center">
-                      <div class="carousel_image_container">
+                      <div class="carousel_container">
                         {/* Image Carousel in edit */}
                         {getSlides(post3.file_url)}
-                        <img src={slides} class="carousel_image" />
+                      
+                        <div class="carousel" style={{ transform: `translateX(-${curr * 100}%)` }}>
+                          {Array.isArray(slides) ? (
+                            slides.map((slide) => (
+                              isImageLink(slide) ? (
+                                <img src={slide} alt="Image" class="carousel_content"/>
+                              ) : isVideoLink(slide) ? (
+                                <video src={slide} controls loop class="carousel_content" />
+                              ) : (
+                                <h1 class="carousel_content">No media</h1>
+                              )
+                            ))
+                          ) : (
+                            <h1>No media display</h1>
+                          )}
+                        </div>
                       </div>
                     </div>
-                    <button>Prev</button>  
-                    <button class="right">Next</button>   
-                    <input class="caption" type="text" defaultValue={post2.caption} id="caption" onChange={(e) => { setCaption(e.target.value) }}/>
+                    <div width="600px">
+                      <button onClick={prev}>Prev</button>  
+                      <button class="right" onClick={next}>Next</button>  
+                      <input class="caption" type="text" defaultValue={post2.caption} id="caption" onChange={(e) => { setCaption(e.target.value) }}/>
+                    </div>
                   </div>
 
                   <div class="flex">
@@ -392,26 +448,34 @@ export default function Content() {
                   
                   {/* Image Carousel */}    
                   <div class="center"> 
-                    <div class="carousel_image_container">
+                    <div class="carousel_container">
+                      {/* Image Carousel in edit */}
                       {getSlides(post3.file_url)}
-                      <img src={slides} class="carousel_image"/>
-                      
-                      {/* i don't know why it's not working 
-                      <div class="carousel">
-                        {slides.map((slide) => (
-                          <div key={slide}> 
-                            <img src="slide">                               
-                          </div>
-                        ))}
+                    
+                      <div class="carousel" style={{ transform: `translateX(-${curr * 100}%)` }}>
+                        {Array.isArray(slides) ? (
+                          slides.map((slide) => (
+                            isImageLink(slide) ? (
+                              <img src={slide} alt="Image" class="carousel_content"/>
+                            ) : isVideoLink(slide) ? (
+                              <video src={slide} controls loop class="carousel_content" />
+                            ) : (
+                              <h1 class="carousel_content">No media</h1>
+                            )
+                          ))
+                        ) : (
+                          <h1>No slides to display</h1>
+                        )}
                       </div>
-                      */}
-
-                    </div>  
+                    </div> 
                   </div>  
-                  <button>Prev</button>  
-                  <button class="right">Next</button>                                          
+                  <div width="600px">
+                    <button onClick={prev}>Prev</button>  
+                    <button class="right" onClick={next}>Next</button>                                          
                     <h3 class="caption">{post3.caption}</h3>
-                  <button class="right" onClick={()=>{deletePost(post3.post_id)}}>Delete Post</button>
+                    <button class="right" onClick={()=>{deletePost(post3.post_id)}}>Delete Post</button>
+                    <br/>
+                  </div>
                 </div>
               </div>
             ))}
