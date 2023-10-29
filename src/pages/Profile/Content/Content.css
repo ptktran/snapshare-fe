@@ -163,44 +163,39 @@ textarea:focus{
     height: 700px;
     padding: 20px 30px;
     background: #fff;
-    box-shadow: 2px 2pz 5px 5px rgba(0,0,0,0.15);
     color: #e21362;
     border-radius: 10px;
     z-index: 9999;
+    overflow-y: scroll;
 }
 
 .posts {
     display: flex;
     flex-flow: wrap;
+    width: 500px;
 }
 
-.posts .container {
-    display: block;
+.posts .post_container {
+    display: flex;
     align-items: center;
+    justify-content: center;
     overflow: hidden;
+    position: relative;
+    margin: 8px;
+
 }
 
-.container img {
+.post_container .post_content {
     width: 150px;
     height: 150px;
     object-fit: cover;  
 }
 
-.container {
-    position: relative;
-}
-
-.container button {
-    margin: 8px;
-}
-
-.posts .container img {
-    object-fit: cover;
-}
-
-.container:hover{
-    background-color: #69d1f4;
-    opacity: 0.7;
+.post_container:hover{
+    background-color: #606060;
+    opacity: 0.5;
+    font-size: 25px;
+    font-weight: bold;
 }
 
 .popup .right {
@@ -217,16 +212,25 @@ textarea:focus{
     place-items: center;
 }
 
-.popup .center .carousel_image_container{
-    display: block;
-    overflow: hidden;
+.carousel_container{
     width: 600px;
-    height: 350px;
     margin: 15px;
+    overflow: hidden;
+    white-space: nowrap; /* Prevent images from wrapping */
+    display: flex;
+    align-items: center;
 }
 
-.popup .center .carousel_image {
-    width: 600px;
+.carousel {
+    display: flex;
+    transition-duration: 500ms;
+    transition-timing-function: ease-out;
+}
+
+.carousel .carousel_content {
+    max-height: 100%; 
+    min-width: 100%; 
+    object-fit: contain;
 }
 
 .profile_image {
@@ -258,4 +262,5 @@ textarea:focus{
     margin-left: 20px;
     text-align: center;
     width: 600px;
+    white-space: normal;
 }
