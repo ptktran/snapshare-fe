@@ -150,3 +150,112 @@ textarea:focus{
     cursor: pointer;
     margin: 0 10px; /* Add horizontal margin for spacing between buttons */
 }
+
+
+/* posts section */
+.popup {
+    position: absolute;
+    top:50%;
+    left: 50%;
+    display: none ;
+    transform: translate(-50%, -50%) scale(1);
+    width: 700px;
+    height: 700px;
+    padding: 20px 30px;
+    background: #fff;
+    box-shadow: 2px 2pz 5px 5px rgba(0,0,0,0.15);
+    color: #e21362;
+    border-radius: 10px;
+    z-index: 9999;
+}
+
+.posts {
+    display: flex;
+    flex-flow: wrap;
+}
+
+.posts .container {
+    display: block;
+    align-items: center;
+    overflow: hidden;
+}
+
+.container img {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;  
+}
+
+.container {
+    position: relative;
+}
+
+.container button {
+    margin: 8px;
+}
+
+.posts .container img {
+    object-fit: cover;
+}
+
+.container:hover{
+    background-color: #69d1f4;
+    opacity: 0.7;
+}
+
+.popup .right {
+    float: right;
+}
+
+.popup .flex {
+    display: flex;
+    padding: 10px;
+}
+
+.popup .center {
+    display: grid;
+    place-items: center;
+}
+
+.popup .center .carousel_image_container{
+    display: block;
+    overflow: hidden;
+    width: 600px;
+    height: 350px;
+    margin: 15px;
+}
+
+.popup .center .carousel_image {
+    width: 600px;
+}
+
+.profile_image {
+    display: block;
+    overflow: hidden;
+    width: 60px;
+    height: 60px;
+    padding: 10px;
+    border-radius: 30px;
+}
+
+.popup input {
+    border-color: #e21362;
+    border-width: 1px;
+    width: 600px;
+}
+
+.popup button {
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.popup button:hover {
+    background-color: black;
+}
+
+.popup .caption {
+    padding: 5px;
+    margin-left: 20px;
+    text-align: center;
+    width: 600px;
+}
