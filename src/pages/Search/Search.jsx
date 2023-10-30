@@ -59,12 +59,14 @@ export default function Search() {
                 <h1 className="text-xl font-bold">User Search</h1>
                 <div class="search_bar">
                     <input type="text" placeholder="Search users..." className="search" onChange={e => setQuery(e.target.value)}/>
-                    <ul className="list">
-                        {users.filter((user) =>
-                            user.username.toLowerCase().includes(query)).map((user) => (
-                            <li key={user.id} className="listItem">{user.username}</li>
-                        ))}
-                    </ul>
+                    <div class="search_results">
+                        <ul className="list">
+                            {users.filter((user) =>
+                                user.username.toLowerCase().includes(query)).map((user) => (
+                                <li key={user.id} className="listItem">{user.username}</li>
+                            ))}
+                        </ul>
+                    </div>
 
                 </div>
                 
@@ -72,12 +74,14 @@ export default function Search() {
                 <h1 className="text-xl font-bold">Post Search</h1>
                 <div class="search_bar">
                     <input type="text" placeholder="Search posts..." className="search" onChange={e => setQuery2(e.target.value)}/>
-                    <ul className="list">
-                        {posts.filter((post) =>
-                            post.caption.toLowerCase().includes(query2)).map((post) => (
-                            <li key={post.post_id} className="listItem">{post.caption}</li>
-                        ))}
-                    </ul>
+                    <div class="search_results">
+                        <ul className="list">
+                            {posts.filter((post) =>
+                                post.caption.toLowerCase().includes(query2)).map((post) => (
+                                <li key={post.post_id} className="listItem">{post.caption}</li>
+                            ))}
+                        </ul>
+                    </div>
 
                 </div>
             </div>
