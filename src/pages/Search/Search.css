@@ -1,0 +1,17 @@
+.search_bar {
+    padding: 20px;
+}
+
+.search_bar input {
+    border-radius: 4px;
+    width: 500px;
+    padding: 10px;
+}
+
+.search_bar ul {
+    padding: 5px;
+}
+
+.search_bar li {
+    padding: 5px;
+}
