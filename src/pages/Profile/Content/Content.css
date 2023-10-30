@@ -14,6 +14,7 @@
 .page-container {
     height: 100vh; 
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: top;
 }
@@ -30,11 +31,18 @@
     align-items: center; 
     justify-content: center; 
     margin: 20px; /* Add margin for spacing */
+    width: 100%;
+    gap: 20px;
 }
 
 .profile-left {
     text-align: center;
+    width: 350px;
+    word-wrap:break-word;
     padding: 50px; /* Add padding to separate the content */
+    gap: 20px;
+    display: flex;
+    flex-direction: column;
 }
 
 .profile-image-container {
@@ -56,13 +64,17 @@
     padding: 10px; /* Add padding to separate the content */
     display: flex; /* Allow children to be aligned in a row */
     flex-direction: column; /* Stack the children vertically */
+    width: 350px;
 }
 
 /* Add black text on inputs */
 input[type="text"],
 input[type="url"],
-textarea:focus{ 
-    color: black;
+#bio { 
+    background-color: #333;
+    padding: 10px;
+    border-radius: 5px;
+    width: 100%;
 }
 
 .standout {
@@ -74,6 +86,7 @@ textarea:focus{
     border-radius: 6px; /* Rounded corners */
     cursor: pointer; /* Add a pointer cursor on hover */
     margin: 10px 0; /* Add margin for spacing */
+    transition: background-color ease 150ms;
 }
 
 .standout:hover {
@@ -116,6 +129,8 @@ textarea:focus{
     display: flex;
     justify-content: flex-end; /* Position the button on the right */
     align-items: flex-start;
+    width: 100%;
+    gap: 15px;
     margin-top: 10px; /* Add spacing from the top */
 } 
 /* Updated CSS for the "Edit Profile" button */

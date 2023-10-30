@@ -1,6 +1,7 @@
 // Imports
 import React, { useState, useEffect } from 'react';
 import { useAuth, supabase } from '../../../auth/Auth';
+import { toast, Toaster } from "react-hot-toast";
 import './Content.css';
 
 // default function
@@ -12,8 +13,9 @@ export default function Content() {
   const [website, setWebsite] = useState('');
   const [username, setUsername] = useState('');
   const [isEditing, setIsEditing] = useState(false);
-  const [createButtonClicked, setCreateButtonClicked] = useState(false);
-
+  const [hasProfile, setHasProfile] = useState(false);
+  const [userData, setUserData] = useState([])
+  // console.log(bio, username, website)
   // Edit mode + handling changes
   const toggleEditing = () => {
     setIsEditing(!isEditing);
@@ -35,11 +37,17 @@ export default function Content() {
     setUsername(newUsername);
   };
 
-
+  
   useEffect(() => {
-    fetchUserProfile(); 
-  }, []);
-
+    setUsername(userData.username);
+    setBio(userData.user_bio);
+    setProfileImage(userData.user_profile || '');
+    setWebsite(userData.user_website || '');
+  }, [userData, isEditing])
+  
+  useEffect(() => {
+    fetchUserProfile()
+  }, [])
 
   // Gets the user profile 
   const fetchUserProfile = async () => {
@@ -53,10 +61,15 @@ export default function Content() {
     }
     if (data.length > 0) {
       const user = data[0];
-      setUsername(user.username);
-      setBio(user.user_bio);
-      setProfileImage(user.profile_picture_url || '');
-      setWebsite(user.website || '');
+      setUserData({
+        username: user.username,
+        user_bio: user.user_bio,
+        user_profile: user.profile_picture_url || '',
+        user_website: user.website || '',
+      })
+      setHasProfile(true)
+    } else {
+      toast(<button onClick={() => setIsEditing(true)}>Create your profile to get started!</button>, { icon: '👋', duration: 3000, id: "signup" })
     }
   };
 
@@ -75,13 +88,15 @@ export default function Content() {
             website,
           },
         ]);
-      if (error) {
-        throw error;
+      if (error && error.code === "23505") {
+        toast.error((<h1><b>{username}</b> already exists, please try again.</h1>), { id: "duplicate"})
+      } else {
+        setIsEditing(false);
+        setHasProfile(true)
+        fetchUserProfile()
       }
-      setIsEditing(false);
-      setCreateButtonClicked(true);
     } catch (error) {
-      console.error('An error occurred:', error);
+      console.log(error)
     }
   }
 
@@ -97,8 +112,13 @@ export default function Content() {
           profile_picture_url: profileImage,
           website,
         };
-        await supabase.from('users123').update(userProfile).eq('user_id', user.id);
-        setIsEditing(false);
+        const { error } = await supabase.from('users123').update(userProfile).eq('user_id', user.id);
+        if (error && error.code === "23505") {
+          toast.error((<h1><b>{username}</b> already exists, please try again.</h1>), { id: "duplicate"})
+        } else {
+          fetchUserProfile()
+          setIsEditing(false)
+        }
       } else {
         throw new Error('No user_id found. Cannot update the profile.');
       }
@@ -117,7 +137,6 @@ export default function Content() {
 
   console.log(image_url);
   console.log(caption);
-  console.log(user);
 
   //get posts
   async function getPosts() {
@@ -264,14 +283,29 @@ export default function Content() {
               <div className="profile-image-placeholder">
                 <img src="https://cdn141.picsart.com/357697367045201.jpg" alt="Profile" className="profile-image" />
               </div>
+              )}
+            </div>
+            {isEditing && (
+              <div>
+                <h1><b>@{username}</b></h1>
+                <p>{bio}</p> {/* Display current bio as you type */}
+              </div>
             )}
           </div>
-        </div>
         <div className="profile-right">
           {isEditing ? (
             <div className="edit-profile-modal">
               <div className="edit-profile-input">
-                <label htmlFor="bio">Edit Bio (max 50 characters):</label>
+                <label htmlFor="username">Edit Username</label><br/>
+                <input
+                  type="text"
+                  id="username"
+                  value={username}
+                  onChange={handleUsernameChange}
+                />
+              </div>
+              <div className="edit-profile-input">
+                <label htmlFor="bio">Edit Bio (max 50 characters)</label><br/>
                 <textarea
                   id="bio"
                   value={bio}
@@ -279,19 +313,19 @@ export default function Content() {
                   maxLength={50}
                   autoComplete="off"
                 />
-                <p>Current Bio: {bio}</p> {/* Display current bio as you type */}
               </div>
               <div className="edit-profile-input">
-                <label htmlFor="profile-image">Change Profile Photo:</label>
+                <label htmlFor="profile-image">Change Profile Photo</label><br/>
                 <input
                   type="url"
                   id="profile-image"
+                  placeholder="Image url"
                   value={profileImage}
                   onChange={handleImageInput}
                 />
               </div>
               <div className="edit-profile-input">
-                <label htmlFor="website">Edit External Website:</label>
+                <label htmlFor="website">Edit External Website</label><br/>
                 <input
                   type="url"
                   id="website"
@@ -300,45 +334,41 @@ export default function Content() {
                   placeholder="https://example.com"
                 />
               </div>
-              <div className="edit-profile-input">
-                <label htmlFor="username">Edit Username:</label>
-                <input
-                  type="text"
-                  id="username"
-                  value={username}
-                  onChange={handleUsernameChange}
-                />
-              </div>
               <div className="edit-button-container">
-              {!createButtonClicked ? ( 
+              {!hasProfile ? ( 
                 <button className="standout create-button" onClick={createProfile}>
                   Create Profile
                 </button>
               ) : (
-                <button className="standout save-button" onClick={handleSave}>
-                  Save
-                </button>
+                <div className="edit-button-container">
+                  <button className="standout save-button" onClick={() => {setIsEditing(false)}}>
+                    Cancel
+                  </button>
+                  <button className="standout save-button" onClick={handleSave}>
+                    Save
+                  </button>
+                </div>
                 )}
               </div>
             </div>
           ) : (
             <>
               <div className="username-tab">
-                <p>{username}</p>
+                <p>{userData.username}</p>
               </div>
               <button className="standout edit-button" onClick={toggleEditing}>
-                Edit Profile
+                {!hasProfile ? <h1>Create Profile</h1> : <h1>Edit Profile</h1>}
               </button>
               <div className="displayed-items">
-                {bio ? (
-                  <p>{bio}</p>
+                {userData.user_bio ? (
+                  <p>{userData.user_bio}</p>
                 ) : (
-                  <p>null</p>
+                  <p>Profile not created</p>
                 )}
-                {website && (
+                {userData.user_website && (
                   <p>
                     <a href={website} target="_blank" rel="noopener noreferrer">
-                      {website}
+                      {userData.user_website}
                     </a>
                   </p>
                 )}
@@ -485,6 +515,9 @@ export default function Content() {
       )}
     </div>
     </div>
+    <Toaster toastOptions={{
+      duration: 1700
+    }}/>
   </div> 
   );
 }
