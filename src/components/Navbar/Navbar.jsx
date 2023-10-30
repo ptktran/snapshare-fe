@@ -21,11 +21,11 @@ export default function Navbar() {
             <span class="inline-flex items-center justify-center h-12 w-12 text-2xl md:text-xl text-foreground"><i class="bx bx-home"></i></span>
             <span className="hidden md:block">Home</span>
           </NavLink>
-          <NavLink to="/something" className={ ({ isActive }) => isActive ? linkStyles.active : linkStyles.nonactive }>
+          <NavLink to="/search" className={ ({ isActive }) => isActive ? linkStyles.active : linkStyles.nonactive }>
             <span class="inline-flex items-center justify-center h-12 w-12 text-2xl md:text-xl text-foreground"><i class="bx bx-search"></i></span>
             <span className="hidden md:block">Search</span>
           </NavLink>
-          <NavLink to="/something" className={ ({ isActive }) => isActive ? linkStyles.active : linkStyles.nonactive }>
+          <NavLink to="/messages" className={ ({ isActive }) => isActive ? linkStyles.active : linkStyles.nonactive }>
             <span class="inline-flex items-center justify-center h-12 w-12 text-2xl md:text-xl text-foreground"><i class="bx bx-chat"></i></span>
             <span className="hidden md:block">Messages</span>
           </NavLink>
@@ -33,7 +33,7 @@ export default function Navbar() {
             <span class="inline-flex items-center justify-center h-12 w-12 text-2xl md:text-xl text-foreground"><i class="bx bx-add-to-queue"></i></span>          
             <span className="hidden md:block">Create</span>
           </NavLink>
-          <NavLink to="/something" className={ ({ isActive }) => isActive ? linkStyles.active : linkStyles.nonactive }>
+          <NavLink to="/notifications" className={ ({ isActive }) => isActive ? linkStyles.active : linkStyles.nonactive }>
             <span class="inline-flex items-center justify-center h-12 w-12 text-2xl md:text-xl text-foreground"><i class="bx bx-bell"></i></span>
             <span className="hidden md:block">Notifications</span>
           </NavLink>
