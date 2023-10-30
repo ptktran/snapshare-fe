@@ -12,6 +12,11 @@
     padding: 5px;
 }
 
+.search_bar .search_results {
+    height: 300px;
+    overflow-y: scroll;
+}
+
 .search_bar li {
     padding: 5px;
 }
