@@ -1,0 +1,139 @@
+.search_bar {
+    padding: 20px;
+}
+
+.search_bar input {
+    border-radius: 4px;
+    width: 500px;
+    padding: 10px;
+}
+
+.search_bar ul {
+    padding: 5px;
+}
+
+.search_bar .search_results {
+    height: 300px;
+    overflow-y: scroll;
+}
+
+.search_bar .listItem {
+    padding: 5px;
+}
+
+.listItem:hover {
+    background-color: rgb(50, 50, 50);
+}
+
+/* popup section */
+.popup {
+    position: absolute;
+    top:50%;
+    left: 50%;
+    display: none ;
+    transform: translate(-50%, -50%) scale(1);
+    width: 700px;
+    height: 700px;
+    padding: 20px 30px;
+    background: #fff;
+    color: #e21362;
+    border-radius: 10px;
+    z-index: 9999;
+    overflow-y: scroll;
+}
+
+.posts {
+    display: flex;
+    flex-flow: wrap;
+    width: 500px;
+}
+
+.posts .post_container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+    margin: 8px;
+
+}
+
+.post_container .post_content {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;  
+}
+
+.post_container:hover{
+    background-color: #606060;
+    opacity: 0.5;
+    font-size: 25px;
+    font-weight: bold;
+}
+
+.popup .right {
+    float: right;
+}
+
+.popup .flex {
+    display: flex;
+    padding: 10px;
+}
+
+.popup .center {
+    display: grid;
+    place-items: center;
+}
+
+.carousel_container{
+    width: 600px;
+    margin: 15px;
+    overflow: hidden;
+    white-space: nowrap; /* Prevent images from wrapping */
+    display: flex;
+    align-items: center;
+}
+
+.carousel {
+    display: flex;
+    transition-duration: 500ms;
+    transition-timing-function: ease-out;
+}
+
+.carousel .carousel_content {
+    max-height: 100%; 
+    min-width: 100%; 
+    object-fit: contain;
+}
+
+.profile_image {
+    display: block;
+    overflow: hidden;
+    width: 60px;
+    height: 60px;
+    padding: 10px;
+    border-radius: 30px;
+}
+
+.popup input {
+    border-color: #e21362;
+    border-width: 1px;
+    width: 600px;
+}
+
+.popup button {
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.popup button:hover {
+    background-color: black;
+}
+
+.popup .caption {
+    padding: 5px;
+    margin-left: 20px;
+    text-align: center;
+    width: 600px;
+    white-space: normal;
+}

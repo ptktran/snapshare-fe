@@ -6,6 +6,7 @@ import CreatePost from './pages/Create/CreatePost/CreatePost'
 import Content from './pages/Profile/Content/Content'
 import Settings from './pages/Profile/Settings/Settings'
 import Login from './pages/Login/Login'
+import Search from './pages/Search/Search'
 import PrivateRoute from './routes/PrivateRoute'
 import UserProfile from './pages/Profile/UserProfile/UserProfile'
 import PostPage from './pages/Post/PostPage'
@@ -24,6 +25,7 @@ function App() {
           <Route path="/post/:postId" element={<PrivateRoute user={user}><PostPage /></PrivateRoute>} />
           <Route path="/something" element={<Navigate to="/" replace />} />
           <Route path="*" element={<ErrorPage />} />
+          <Route path="/search" element={<PrivateRoute user={user}><Search /></PrivateRoute>} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
