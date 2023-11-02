@@ -84,7 +84,7 @@ export default function Content() {
             username,
             email: user.email,
             user_bio: bio,
-            profile_picture_url: profileImage,
+            profile_picture_url: profileImage ? profileImage : `https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg`,
             website,
           },
         ]);

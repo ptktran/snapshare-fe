@@ -3,19 +3,19 @@ import { Link, useParams } from "react-router-dom"
 import ErrorPage from "../../Error/ErrorPage"
 import { useAuth } from "../../../auth/Auth"
 import { useNavigate } from "react-router-dom"
+import Loader from "../../../components/Loader/Loader"
 
 export default function UserProfile() {
   const { username } = useParams()
   const { user } = useAuth()
-  const navigate = useNavigate()
   const [userData, setUserData] = useState({})
   const [userPosts, setUserPosts] = useState({})
   const [msg, setMsg] = useState()
   const [errorCode, setErrorCode] = useState()
   const [ownAccount, setOwnAccount] = useState(false)
   const [loading, setLoading] = useState(true)
-  console.log(userPosts, userData)
 
+  // fetch user data and check if account is owned by user
   useEffect(() => {
     const fetchUser = async (username) => {
       try {
@@ -26,8 +26,6 @@ export default function UserProfile() {
           if (data.status === 200) {
             if (data.data[0].user_id === user.id) {
               setOwnAccount(true)
-              // navigate("/profile", {replace: true})
-              // return
             }
             setUserData(data.data[0])
             fetchUserPosts(username)
@@ -67,13 +65,17 @@ export default function UserProfile() {
     return false
   }
 
+  // if no post is found return error page, if loading return loading page
   if (errorCode) {
     return <ErrorPage errorCode={errorCode} />
+  } else if (loading) {
+    return <Loader />
   }
 
   return (
     <>
       <main className="ml-0 md:ml-64">
+        {/* header with user name and user info */}
         <header className="w-full md:w-[800px] border-b border-gray m-auto flex justify-center gap-20 p-5">
           <div className="p-5">
             {userData.profile_picture_url ? (
@@ -113,20 +115,25 @@ export default function UserProfile() {
           </section>
         </header>
         
-        <section className="flex flex-wrap justify-start py-2 gap-4 w-[800px] m-auto">
-          {userPosts.length >= 1 && userPosts.map((post, index) => (
-            <Link to={`/post/${post.post_id}`} key={index} className="w-64 h-64 overflow-hidden">
+        {/* rendering user posts */}
+        <section className="flex flex-wrap justify-start py-4 gap-4 w-[800px] m-auto">
+          {userPosts.length >= 1 ? userPosts.map((post, index) => (
+            <Link to={`/post/${post.post_id}`} key={index} className="w-64 h-64 relative group overflow-hidden">
               {post.file_url && post.file_url[0] ? (
                 isImage(post.file_url[0]) ? (
-                  <img src={post.file_url[0]} className="w-full h-full object-cover" />
+                  <img src={post.file_url[0]} className="w-full h-full object-cover" alt="Post Thumbnail" />
                 ) : (
-                  <video src={post.file_url[0]} className="w-full h-full object-cover" />
+                  <video src={post.file_url[0]} className="w-full h-full object-cover" alt="Post Thumbnail" />
                 )
               ) : (
                 <p>No media available</p>
               )}
+
+              <div className="absolute inset-0 bg-black bg-opacity-20 opacity-0 group-hover:opacity-100 duration-100 transition-opacity flex items-center justify-center"/>
             </Link>
-          ))}
+          )) : (
+            <h1 className="m-auto text-lg text-neutral-600 py-5">{msg}</h1>
+          )}
         </section>
       </main>
     </>
