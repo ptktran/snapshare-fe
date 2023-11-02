@@ -7,6 +7,9 @@ import Content from './pages/Profile/Content/Content'
 import Settings from './pages/Profile/Settings/Settings'
 import Login from './pages/Login/Login'
 import PrivateRoute from './routes/PrivateRoute'
+import UserProfile from './pages/Profile/UserProfile/UserProfile'
+import PostPage from './pages/Post/PostPage'
+import ErrorPage from './pages/Error/ErrorPage'
 
 function App() {
   const { user } = useAuth()
@@ -17,6 +20,10 @@ function App() {
           <Route path="/" element={<PrivateRoute user={user}><Home /></PrivateRoute>} />
           <Route path="/create-post" element={<PrivateRoute user={user}><CreatePost /></PrivateRoute>} /> 
           <Route path="/profile" element={<PrivateRoute user={user}><Content /></PrivateRoute>} />
+          <Route path="/user/:username" element={<PrivateRoute user={user}><UserProfile /></PrivateRoute>} />
+          <Route path="/post/:postId" element={<PrivateRoute user={user}><PostPage /></PrivateRoute>} />
+          <Route path="/something" element={<Navigate to="/" replace />} />
+          <Route path="*" element={<ErrorPage />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
