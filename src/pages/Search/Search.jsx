@@ -64,7 +64,7 @@ export default function Search() {
                             {users.filter((user) =>
                                 user.username.toLowerCase().includes(query)).map((user) => (
                                 <li key={user.id} className="listItem">
-                                    <a href="#">{user.username}</a>
+                                    <a href="user.id">{user.username}</a>
                                 </li>
                             ))}
                         </ul>
@@ -84,7 +84,7 @@ export default function Search() {
                                     <li key={post.post_id} className="listItem">
                                         <a href="#">{post.caption}</a>
                                     </li>
-                                {/*  d  
+                                {/*    
                                     {/* Popup image        
                                     <div class="popup" id="imagePop">
                                         <button onClick={()=>{closeImg()}}>&times;</button>
