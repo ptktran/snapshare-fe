@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
-import { Carousel } from "@material-tailwind/react";
 import ErrorPage from "../Error/ErrorPage";
 
 export default function PostPage() {
