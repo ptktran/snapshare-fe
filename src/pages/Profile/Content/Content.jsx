@@ -1,7 +1,6 @@
 // Imports
 import React, { useState, useEffect } from 'react';
 import { useAuth, supabase } from '../../../auth/Auth';
-import { toast, Toaster } from "react-hot-toast";
 import './Content.css';
 
 // default function
@@ -13,9 +12,8 @@ export default function Content() {
   const [website, setWebsite] = useState('');
   const [username, setUsername] = useState('');
   const [isEditing, setIsEditing] = useState(false);
-  const [hasProfile, setHasProfile] = useState(false);
-  const [userData, setUserData] = useState([])
-  // console.log(bio, username, website)
+  const [createButtonClicked, setCreateButtonClicked] = useState(false);
+
   // Edit mode + handling changes
   const toggleEditing = () => {
     setIsEditing(!isEditing);
@@ -37,17 +35,11 @@ export default function Content() {
     setUsername(newUsername);
   };
 
-  
+
   useEffect(() => {
-    setUsername(userData.username);
-    setBio(userData.user_bio);
-    setProfileImage(userData.user_profile || '');
-    setWebsite(userData.user_website || '');
-  }, [userData, isEditing])
-  
-  useEffect(() => {
-    fetchUserProfile()
-  }, [])
+    fetchUserProfile(); 
+  }, []);
+
 
   // Gets the user profile 
   const fetchUserProfile = async () => {
@@ -61,15 +53,10 @@ export default function Content() {
     }
     if (data.length > 0) {
       const user = data[0];
-      setUserData({
-        username: user.username,
-        user_bio: user.user_bio,
-        user_profile: user.profile_picture_url || '',
-        user_website: user.website || '',
-      })
-      setHasProfile(true)
-    } else {
-      toast(<button onClick={() => setIsEditing(true)}>Create your profile to get started!</button>, { icon: '👋', duration: 3000, id: "signup" })
+      setUsername(user.username);
+      setBio(user.user_bio);
+      setProfileImage(user.profile_picture_url || '');
+      setWebsite(user.website || '');
     }
   };
 
@@ -88,15 +75,13 @@ export default function Content() {
             website,
           },
         ]);
-      if (error && error.code === "23505") {
-        toast.error((<h1><b>{username}</b> already exists, please try again.</h1>), { id: "duplicate"})
-      } else {
-        setIsEditing(false);
-        setHasProfile(true)
-        fetchUserProfile()
+      if (error) {
+        throw error;
       }
+      setIsEditing(false);
+      setCreateButtonClicked(true);
     } catch (error) {
-      console.log(error)
+      console.error('An error occurred:', error);
     }
   }
 
@@ -112,13 +97,8 @@ export default function Content() {
           profile_picture_url: profileImage,
           website,
         };
-        const { error } = await supabase.from('users123').update(userProfile).eq('user_id', user.id);
-        if (error && error.code === "23505") {
-          toast.error((<h1><b>{username}</b> already exists, please try again.</h1>), { id: "duplicate"})
-        } else {
-          fetchUserProfile()
-          setIsEditing(false)
-        }
+        await supabase.from('users123').update(userProfile).eq('user_id', user.id);
+        setIsEditing(false);
       } else {
         throw new Error('No user_id found. Cannot update the profile.');
       }
@@ -137,6 +117,7 @@ export default function Content() {
 
   console.log(image_url);
   console.log(caption);
+  console.log(user);
 
   //get posts
   async function getPosts() {
@@ -230,10 +211,6 @@ export default function Content() {
     document.getElementById("imagePop").style.display = "none";
   } 
 
-  //display image
-  const bucket_url = "https://cmknbeginwvrwzxmgdgy.supabase.co/storage/v1/object/public/Upload/"
-  const bucket_url2 = "https://cmknbeginwvrwzxmgdgy.supabase.co/storage/v1/object/public/Profile/"
-
   var slides;
 
   //image carousel
@@ -283,29 +260,14 @@ export default function Content() {
               <div className="profile-image-placeholder">
                 <img src="https://cdn141.picsart.com/357697367045201.jpg" alt="Profile" className="profile-image" />
               </div>
-              )}
-            </div>
-            {isEditing && (
-              <div>
-                <h1><b>@{username}</b></h1>
-                <p>{bio}</p> {/* Display current bio as you type */}
-              </div>
             )}
           </div>
+        </div>
         <div className="profile-right">
           {isEditing ? (
             <div className="edit-profile-modal">
               <div className="edit-profile-input">
-                <label htmlFor="username">Edit Username</label><br/>
-                <input
-                  type="text"
-                  id="username"
-                  value={username}
-                  onChange={handleUsernameChange}
-                />
-              </div>
-              <div className="edit-profile-input">
-                <label htmlFor="bio">Edit Bio (max 50 characters)</label><br/>
+                <label htmlFor="bio">Edit Bio (max 50 characters):</label>
                 <textarea
                   id="bio"
                   value={bio}
@@ -313,19 +275,19 @@ export default function Content() {
                   maxLength={50}
                   autoComplete="off"
                 />
+                <p>Current Bio: {bio}</p> {/* Display current bio as you type */}
               </div>
               <div className="edit-profile-input">
-                <label htmlFor="profile-image">Change Profile Photo</label><br/>
+                <label htmlFor="profile-image">Change Profile Photo:</label>
                 <input
                   type="url"
                   id="profile-image"
-                  placeholder="Image url"
                   value={profileImage}
                   onChange={handleImageInput}
                 />
               </div>
               <div className="edit-profile-input">
-                <label htmlFor="website">Edit External Website</label><br/>
+                <label htmlFor="website">Edit External Website:</label>
                 <input
                   type="url"
                   id="website"
@@ -334,41 +296,45 @@ export default function Content() {
                   placeholder="https://example.com"
                 />
               </div>
+              <div className="edit-profile-input">
+                <label htmlFor="username">Edit Username:</label>
+                <input
+                  type="text"
+                  id="username"
+                  value={username}
+                  onChange={handleUsernameChange}
+                />
+              </div>
               <div className="edit-button-container">
-              {!hasProfile ? ( 
+              {!createButtonClicked ? ( 
                 <button className="standout create-button" onClick={createProfile}>
                   Create Profile
                 </button>
               ) : (
-                <div className="edit-button-container">
-                  <button className="standout save-button" onClick={() => {setIsEditing(false)}}>
-                    Cancel
-                  </button>
-                  <button className="standout save-button" onClick={handleSave}>
-                    Save
-                  </button>
-                </div>
+                <button className="standout save-button" onClick={handleSave}>
+                  Save
+                </button>
                 )}
               </div>
             </div>
           ) : (
             <>
               <div className="username-tab">
-                <p>{userData.username}</p>
+                <p>{username}</p>
               </div>
               <button className="standout edit-button" onClick={toggleEditing}>
-                {!hasProfile ? <h1>Create Profile</h1> : <h1>Edit Profile</h1>}
+                Edit Profile
               </button>
               <div className="displayed-items">
-                {userData.user_bio ? (
-                  <p>{userData.user_bio}</p>
+                {bio ? (
+                  <p>{bio}</p>
                 ) : (
-                  <p>Profile not created</p>
+                  <p>null</p>
                 )}
-                {userData.user_website && (
+                {website && (
                   <p>
                     <a href={website} target="_blank" rel="noopener noreferrer">
-                      {userData.user_website}
+                      {website}
                     </a>
                   </p>
                 )}
@@ -406,11 +372,11 @@ export default function Content() {
                     )}                    
                   </button> 
                 </div>   
-                        
+                {/* Popup image */}        
                 <div class="popup" id="imagePop">
                   <button onClick={()=>{closeImg()}}>&times;</button>
                   <button class="right" onClick={()=>{openEdit(post3.post_id)}}>Edit</button>
-
+                  {/* Popup Edit form */}
                   <div class="popup" id="myForm">
                     <button onClick={()=>{closeEdit()}}>&times;</button>
                     <button class="right" onClick={()=>{updatePost(post2.post_id)}}>Done</button>
@@ -459,7 +425,7 @@ export default function Content() {
                       <input class="caption" type="text" defaultValue={post2.caption} id="caption" onChange={(e) => { setCaption(e.target.value) }}/>
                     </div>
                   </div>
-
+                  {/* Back to popup form */}
                   <div class="flex">
                     <div>
                         {profileImage ? (
@@ -515,9 +481,6 @@ export default function Content() {
       )}
     </div>
     </div>
-    <Toaster toastOptions={{
-      duration: 1700
-    }}/>
   </div> 
   );
 }
