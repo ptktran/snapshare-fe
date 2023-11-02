@@ -1,5 +1,5 @@
 /** @type {import('tailwindcss').Config} */
-export default {
+module.exports = {
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
@@ -17,6 +17,7 @@ export default {
         foreground: "#E5E5E5",
         background: "#1c1c1c",
         lightgray: "#262626",
+        gray: "#404040",
         accent: "#89AAE6"
       },
       fontFamily: {
@@ -27,4 +28,3 @@ export default {
   },
   plugins: [],
 }
-

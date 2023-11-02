@@ -163,7 +163,7 @@ const CreatePost = () => {
               
               <button 
                 type="button"
-                className="w-7 h-7 border rounded-full flex justify-center items-center absolute -top-3 -right-3 bg-red-400 hover:bg-gray-400 transition-colors"
+                className="w-7 h-7 border rounded-full flex justify-center items-center absolute -top-3 -right-3 bg-red-400 hover:bg-neutral-400 transition-colors"
                 onClick={() => removeFile(file.name)}
               >
                 <XMarkIcon className="w-5 h-5 fill-white hover:fill-secondary-400 transition-colors" />
@@ -185,7 +185,7 @@ const CreatePost = () => {
         <div className="flex justify-center">
           <button
             type="submit"
-            className="mt-3 text-md uppercase tracking-wider font-bold text-black border rounded-md px-3 py-2 mb-8 bg-gray-400 hover:bg-gray-500 transition-colors"
+            className="mt-3 text-md uppercase tracking-wider font-bold text-black border rounded-md px-3 py-2 mb-8 bg-neutral-400 hover:bg-neutral-500 transition-colors"
           >
             Upload
           </button>

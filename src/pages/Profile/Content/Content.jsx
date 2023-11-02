@@ -71,7 +71,7 @@ export default function Content() {
             username,
             email: user.email,
             user_bio: bio,
-            profile_picture_url: profileImage,
+            profile_picture_url: profileImage ? profileImage : `https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg`,
             website,
           },
         ]);
@@ -258,7 +258,7 @@ export default function Content() {
                 <img src={profileImage} alt="Profile" className="profile-image" />
               ) : (
               <div className="profile-image-placeholder">
-                <img src="https://cdn141.picsart.com/357697367045201.jpg" alt="Profile" className="profile-image" />
+                <img src="https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg" alt="Profile" className="profile-image" />
               </div>
             )}
           </div>
