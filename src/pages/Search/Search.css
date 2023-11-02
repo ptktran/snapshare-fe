@@ -17,6 +17,10 @@
     overflow-y: scroll;
 }
 
-.search_bar li {
+.search_bar .listItem {
     padding: 5px;
+}
+
+.listItem:hover {
+    background-color: rgb(50, 50, 50);
 }
