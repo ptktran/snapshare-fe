@@ -3,9 +3,10 @@ import React, { useState, useEffect } from 'react';
 import './Search.css'
 
 export default function Search() {
-    const { user } = useAuth();
+    const { userA } = useAuth();
     const [users, setUsers] = useState([]);
     const [posts, setPosts] = useState([]);
+    const [post2, setPost2] = useState([]);
     const [query, setQuery] = useState("");
     const [query2, setQuery2] = useState("");
 
@@ -26,6 +27,7 @@ export default function Search() {
         }
     }
 
+    //get posts 
     async function getPosts() {
         try {
         const { data, error } = await supabase
@@ -47,13 +49,59 @@ export default function Search() {
         getUsers(); 
         getPosts();
     }, [])
+    
+
+    //pop up form
+    function openImg(postId){
+        document.getElementById("imagePop").style.display = "block";
+        posts.map((post)=>{
+        if(post.post_id==postId){
+            setPost2({ post_id:post.post_id, user_id:post.user_id, image_url:post.image_url, caption:post.caption, created_at: post.created_at, file_url: post.file_url})
+        }
+        })
+    } 
+
+    function closeImg(){
+        document.getElementById("imagePop").style.display = "none";
+    } 
+
+    //image carousel
+    var slides;
+    function getSlides(fileURL){   
+    slides = fileURL;    
+    }
+
+        //move between images/videos
+    const [curr, setCurr] = useState(0);
+
+    const prev = () => {
+        //if first slide, go to last, else forward
+        setCurr((curr) => (curr == 0 ? (slides.length - 1) : (curr - 1)));
+    }
+        
+
+    const next = () => {
+        //if last slide, go to first, else next
+        setCurr((curr) => (curr == (slides.length - 1) ? (0) : (curr + 1)));
+    }
+
+    //determine if image or video
+    function isImageLink(url) {
+        const imageExtensions = /\.(jpg|jpeg|png|gif|bmp|webp|svg|tiff)$/i;
+        return imageExtensions.test(url);
+    }
+
+    function isVideoLink(url) {
+        const videoExtensions = /\.(mp4|webm|ogg|avi|mkv|mov)$/i;
+        return videoExtensions.test(url);
+    }
 
     return (
     <>
       <main className="ml-0 md:ml-64">
         <div class="content-container">
             <div class="content-container p-9 block">
-
+                {/* User Search */}
                 <h1 className="text-3xl font-bold text-center">Search Page</h1>
                 <br/>
                 <h1 className="text-xl font-bold">User Search</h1>
@@ -63,8 +111,8 @@ export default function Search() {
                         <ul className="list">
                             {users.filter((user) =>
                                 user.username.toLowerCase().includes(query)).map((user) => (
-                                <li key={user.id} className="listItem">
-                                    <a href="user.id">{user.username}</a>
+                                <li key={user.user_id} className="listItem">
+                                    <a href={user.user_id}>{user.username}</a>
                                 </li>
                             ))}
                         </ul>
@@ -73,6 +121,7 @@ export default function Search() {
                 </div>
                 
                 <br/>
+                {/* Post Search */}
                 <h1 className="text-xl font-bold">Post Search</h1>
                 <div class="search_bar">
                     <input type="text" placeholder="Search posts..." className="search" onChange={e => setQuery2(e.target.value)}/>
@@ -81,35 +130,25 @@ export default function Search() {
                             {posts.filter((post) =>
                                 post.caption.toLowerCase().includes(query2)).map((post) => (
                                 <div>
-                                    <li key={post.post_id} className="listItem">
-                                        <a href="#">{post.caption}</a>
-                                    </li>
-                                {/*    
-                                    {/* Popup image        
+                                    <li key={post.post_id} className="listItem" onClick={()=>{openImg(post.post_id)}}>{post.caption}</li>
+                                    
+                                    {/* Popup image */}     
                                     <div class="popup" id="imagePop">
                                         <button onClick={()=>{closeImg()}}>&times;</button>
 
-                                        <div class="flex">
-                                            <div>
-                                                {profileImage ? (
-                                                    <img src={profileImage} class="profile_image" />
-                                                    ) : (
-                                                    <div className="profile-image-placeholder">
-                                                    <img src="https://cdn141.picsart.com/357697367045201.jpg" class="profile_image" />
-                                                    </div>
-                                                )}
-                                            </div>
-                                            <div className="block">
-                                                <h3>{username}</h3>
-                                                <p class="right">{post3.created_at}</p>
-                                            </div>
+                                        <div class="flex">                                           
+                                            <img src="https://cdn141.picsart.com/357697367045201.jpg" class="profile_image" />
+                                            <div className="block">              
+                                                <h3><a href={post2.user_id}>{post2.user_id}</a></h3>
+                                                <p class="right">{post2.created_at}</p>
+                                            </div>                                           
                                         </div>
                                     
-                                        {/* Image Carousel    
+                                        {/* Image Carousel */}  
                                         <div class="center"> 
                                             <div class="carousel_container">
-                                                {/* Image Carousel in edit
-                                                {getSlides(post.file_url)}
+                                                {/* Image Carousel in edit */}
+                                                {getSlides(post2.file_url)}
                                             
                                                 <div class="carousel" style={{ transform: `translateX(-${curr * 100}%)` }}>
                                                 {Array.isArray(slides) ? (
@@ -131,12 +170,11 @@ export default function Search() {
                                         <div width="600px">
                                             <button onClick={prev}>Prev</button>  
                                             <button class="right" onClick={next}>Next</button>                                          
-                                            <h3 class="caption">{post.caption}</h3>
-                                            <button class="right" onClick={()=>{deletePost(post3.post_id)}}>Delete Post</button>
+                                            <h3 class="caption">{post2.caption}</h3>
                                             <br/>
                                         </div>
                                     </div>
-                                */}
+                                
                                 </div>   
                             ))}
                         </ul>
