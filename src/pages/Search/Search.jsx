@@ -1,5 +1,6 @@
 import { useAuth, supabase } from "../../auth/Auth";
 import React, { useState, useEffect } from 'react';
+import { Link } from "react-router-dom"
 import './Search.css'
 
 export default function Search() {
@@ -111,9 +112,11 @@ export default function Search() {
                         <ul className="list">
                             {users.filter((user) =>
                                 user.username.toLowerCase().includes(query)).map((user) => (
-                                <li key={user.user_id} className="listItem">
-                                    <a href={user.user_id}>{user.username}</a>
-                                </li>
+                                  <Link to={`/${user.username}`}>
+                                    <li key={user.user_id} className="listItem">
+                                      <span>{user.username}</span>
+                                    </li>
+                                  </Link>  
                             ))}
                         </ul>
                     </div>
