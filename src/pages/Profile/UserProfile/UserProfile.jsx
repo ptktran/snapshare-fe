@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { Link, useParams } from "react-router-dom"
 import ErrorPage from "../../Error/ErrorPage"
-import { useAuth } from "../../../auth/Auth"
+import { useAuth, supabase} from "../../../auth/Auth"
 import { useNavigate } from "react-router-dom"
 import Loader from "../../../components/Loader/Loader"
 
@@ -14,6 +14,14 @@ export default function UserProfile() {
   const [errorCode, setErrorCode] = useState()
   const [ownAccount, setOwnAccount] = useState(false)
   const [loading, setLoading] = useState(true)
+
+  const [following, setFollowing] = useState(false)
+  const [followText, setFollowText] = useState("Follow")
+  const [followColour, setFollowColour] = useState("");
+  const [hoverColour, setHoverColour] = useState("");
+  const [numberOfPosts, setNumberOfPosts] = useState(0)
+  const [numberOfFollowers, setNumberOfFollowers] = useState(0)
+  const [numberOfFollowing, setNumberOfFollowing] = useState(0)
 
   // fetch user data and check if account is owned by user
   useEffect(() => {
@@ -30,6 +38,14 @@ export default function UserProfile() {
             setUserData(data.data[0])
             fetchUserPosts(username)
             setLoading(false)
+
+            if (userData && userData.user_id) {
+              isFollowing();
+              fetchNumberofPosts();
+              fetchNumberOfFollowers();
+              fetchNumberofFollowing();
+            }
+
           } else if (data.status === 404) {
             setErrorCode(data.status)
           }
@@ -38,9 +54,44 @@ export default function UserProfile() {
         console.log(error)
       }
     }
-
     fetchUser(username)
-  }, [])
+  }, [userData])
+
+  {/*useEffect(() => {
+    if(userData && userData.user_id) {
+      console.log(userData.user_id)
+      const fetchFollowers = async () => {
+        if (userData && userData.user_id) {
+          const { data, error } = await supabase
+          .from('followers')
+          .select()
+          .eq('follower_id', user.id)
+          .eq('following_id', userData.user_id)
+      
+          if (data !== null && data.length !== 0) {
+            setFollowing(true);
+            setFollowText("Following");
+            setFollowColour("bg-gray");
+            setHoverColour("bg-accent");
+          }
+          else {
+            setFollowing(false);
+            setFollowText("Follow");
+            setFollowColour("bg-blue-500");
+            setHoverColour("bg-blue-600");
+          }
+      
+          if (error) {
+            console.log(error);
+          }
+        }
+      }
+      fetchFollowers();
+      fetchNumberofPosts();
+      fetchNumberOfFollowers();
+      fetchNumberofFollowing();
+    }
+  }, [userData])*/}
   
   const fetchUserPosts = async (username) => {
     try {
@@ -56,6 +107,111 @@ export default function UserProfile() {
       })
     } catch (error) {
       console.log(error)
+    }
+  }
+
+  const isFollowing = async () => {
+    if (userData && userData.user_id) {
+      const { data, error } = await supabase
+      .from('followers')
+      .select()
+      .eq('follower_id', user.id)
+      .eq('following_id', userData.user_id)
+  
+      if (data !== null && data.length !== 0) {
+        setFollowing(true);
+        setFollowText("Following");
+        setFollowColour("bg-gray");
+        setHoverColour("bg-accent");
+      }
+      else {
+        setFollowing(false);
+        setFollowText("Follow");
+        setFollowColour("bg-blue-500");
+        setHoverColour("bg-blue-600");
+      }
+  
+      if (error) {
+        console.log(error);
+      }
+    }
+  }
+
+  const fetchNumberofPosts = async () => {
+    const { data, error } = await supabase
+    .from('posts')
+    .select('post_id')
+    .eq('user_id', userData.user_id)
+
+    if (data) {
+      setNumberOfPosts(data.length)
+    }
+    if (error) {
+      console.log(error)
+    }
+  }
+
+  const fetchNumberOfFollowers = async () => {
+    const { data, error } = await supabase
+    .from('followers')
+    .select('follower_id')
+    .eq('following_id', userData.user_id)
+
+    if (data) {
+      setNumberOfFollowers(data.length)
+    }
+    if (error) {
+      console.log(error)
+    }
+  }
+
+  const fetchNumberofFollowing = async () => {
+    const { data, error } = await supabase
+    .from('followers')
+    .select('following_id')
+    .eq('follower_id', userData.user_id)
+
+    if (data) {
+      setNumberOfFollowing(data.length)
+    }
+    if (error) {
+      console.log(error)
+    }
+  }
+
+  const handleFollow = async () => {
+    if (following === true ){
+      const {data, error } = await supabase
+      .from('followers')
+      .delete()
+      .eq('follower_id', user.id)
+      .eq('following_id', userData.user_id)
+      .select()
+
+      if (error) {
+        console.log(error)
+      }
+
+      setFollowText("Follow")
+      setFollowing(false)
+      setFollowColour("bg-blue-500")
+      setHoverColour("bg-blue-600")
+
+    }
+    else {
+      const {data, error } = await supabase
+      .from('followers')
+      .insert([{follower_id: user.id, following_id: userData.user_id }])
+      .select()
+
+      if (error) {
+        console.log(error)
+      }
+
+      setFollowText("Following")
+      setFollowing(true)
+      setHoverColour("bg-accent")
+      setFollowColour("bg-gray")
     }
   }
 
@@ -95,16 +251,19 @@ export default function UserProfile() {
                   <Link to="/profile" className="bg-gray px-5 py-1.5 rounded-lg text-sm font-medium hover:bg-accent ease duration-150">Edit Profile</Link>
                 ) : (
                   <>
-                    <button className="bg-gray px-5 py-1.5 rounded-lg text-sm font-medium hover:bg-accent ease duration-150">Follow</button>
-                    <button className="bg-gray px-5 py-1.5 rounded-lg text-sm font-medium hover:bg-gray/80 ease duration-150">Message</button>
+                    <button
+                      onClick={handleFollow}
+                      className={`${followColour} hover:${hoverColour} px-5 py-1.5 rounded-lg text-sm font-medium duration-150 ease`}>{followText}
+                    </button>
+                    <button className="bg-blue-500 px-5 py-1.5 rounded-lg text-sm font-medium hover:bg-blue-600 ease duration-150">Message</button>
                   </>
                 )}
               </div>
             </div>
             <div className="flex items-center gap-10">
-              <h1><b>5</b> posts</h1>
-              <h1><b>20</b> followers</h1>
-              <h1><b>30</b> following</h1>
+              <h1><b>{numberOfPosts}</b> posts</h1>
+              <h1><b>{numberOfFollowers}</b> followers</h1>
+              <h1><b>{numberOfFollowing}</b> following</h1>
             </div>
             <div className="flex flex-col gap-2">
               <h1>{userData.user_bio}</h1>
