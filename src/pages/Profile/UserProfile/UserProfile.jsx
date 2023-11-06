@@ -56,42 +56,6 @@ export default function UserProfile() {
     }
     fetchUser(username)
   }, [userData])
-
-  {/*useEffect(() => {
-    if(userData && userData.user_id) {
-      console.log(userData.user_id)
-      const fetchFollowers = async () => {
-        if (userData && userData.user_id) {
-          const { data, error } = await supabase
-          .from('followers')
-          .select()
-          .eq('follower_id', user.id)
-          .eq('following_id', userData.user_id)
-      
-          if (data !== null && data.length !== 0) {
-            setFollowing(true);
-            setFollowText("Following");
-            setFollowColour("bg-gray");
-            setHoverColour("bg-accent");
-          }
-          else {
-            setFollowing(false);
-            setFollowText("Follow");
-            setFollowColour("bg-blue-500");
-            setHoverColour("bg-blue-600");
-          }
-      
-          if (error) {
-            console.log(error);
-          }
-        }
-      }
-      fetchFollowers();
-      fetchNumberofPosts();
-      fetchNumberOfFollowers();
-      fetchNumberofFollowing();
-    }
-  }, [userData])*/}
   
   const fetchUserPosts = async (username) => {
     try {
@@ -181,7 +145,7 @@ export default function UserProfile() {
 
   const handleFollow = async () => {
     if (following === true ){
-      const {data, error } = await supabase
+      const {error } = await supabase
       .from('followers')
       .delete()
       .eq('follower_id', user.id)
@@ -199,7 +163,7 @@ export default function UserProfile() {
 
     }
     else {
-      const {data, error } = await supabase
+      const {error } = await supabase
       .from('followers')
       .insert([{follower_id: user.id, following_id: userData.user_id }])
       .select()
