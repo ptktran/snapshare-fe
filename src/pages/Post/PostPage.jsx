@@ -4,6 +4,7 @@ import ErrorPage from "../Error/ErrorPage";
 import Carousel from "../../components/Carousel/Carousel";
 import { getDate } from "../../utils/DateFormatter";
 import Loader from "../../components/Loader/Loader";
+import { useAuth, supabase } from '../../auth/Auth';
 
 export default function PostPage() {
   const { postId } = useParams()
@@ -13,9 +14,18 @@ export default function PostPage() {
   const [userData, setUserData] = useState([])
   const [errorCode, setErrorCode] = useState()
   const [loading, setLoading] = useState(true)
+  const [likes, setLikes] = useState(0);
+  const { user } = useAuth();
+  const [heartIcon, setHeartIcon] = useState("/icons/heart.svg");
+  const [isLiked, setIsLiked] = useState(false);
+
 
   useEffect(() => {
     fetchUserPost(postId)
+    fetchLikes(postId);
+    if (user) {
+      checkIfLiked();
+    }
   },[])
   
   // fetch post and user info from backend
@@ -74,6 +84,95 @@ export default function PostPage() {
     }
   }
   
+  // Get the posts likes from supabase
+  const fetchLikes = async (postId) => {
+    const { data, error } = await supabase
+      .from('likes') 
+      .select('like_count')
+      .eq('post_id', postId)
+      .single();
+  
+    if (error) {
+      console.log('Error fetching likes:', error);
+    } else {
+      setLikes(data ? data.like_count : 0); 
+    }
+  };
+
+
+  // Check if user liked and update the heart accordingly
+  const checkIfLiked = async () => {
+    const { data, error } = await supabase
+      .from('user_likes')
+      .select('*')
+      .eq('post_id', postId)
+      .eq('user_id', user.id);
+  
+    if (error) {
+      console.error('Error fetching like status:', error);
+    } else {
+      const liked = data && data.length > 0;
+      setIsLiked(liked);
+      setHeartIcon(liked ? "/icons/heart-filled.png" : "/icons/heart.svg");
+    }
+  };
+
+  // Toggle like/unlike the post
+  const toggleLike = async () => {
+    // Check if the user is trying to like their own post
+    if (user.id === postData.user_id) {
+    console.log("Cannot like your own post.");
+    return; // Stop the function from proceeding further
+    }
+
+    let newLikes = isLiked ? likes - 1 : likes + 1;
+    setIsLiked(!isLiked);
+    setLikes(newLikes);
+    setHeartIcon(!isLiked ? "/icons/heart-filled.png" : "/icons/heart.svg");
+    
+    if (isLiked) {
+      // User is unliking the post
+      const { error } = await supabase
+        .from('user_likes')
+        .delete()
+        .match({ user_id: user.id, post_id: postId });
+      if (error) {
+        console.error('Error unliking the post:', error);
+      } else {
+        // Only update state if the unliking was successful
+        setLikes(newLikes);
+        setIsLiked(false);
+        setHeartIcon("/icons/heart.svg");
+      }
+    } else {
+      // User is liking the post
+      const { error } = await supabase
+        .from('user_likes')
+        .insert({ user_id: user.id, post_id: postId });
+      if (error) {
+        console.error('Error liking the post:', error);
+      } else {
+        // Only update state if the liking was successful
+        setLikes(newLikes);
+        setIsLiked(true);
+        setHeartIcon("/icons/heart-filled.png");
+      }
+    }
+
+    // Attempt to update the like count in the 'likes' table regardless of like/unlike
+    const { error: likesError } = await supabase
+      .from('likes')
+      .upsert({ post_id: postId, like_count: newLikes }, { onConflict: 'post_id' });
+    if (likesError) {
+      console.error('Error updating like count:', likesError);
+      // If there was an error updating the like count, revert the state changes
+      setLikes(likes); // revert back to original likes
+      setIsLiked(!isLiked); // revert the isLiked state
+      setHeartIcon(isLiked ? "/icons/heart-filled.png" : "/icons/heart.svg"); // revert the icon
+    }
+  };
+
+
   // if no post is found return error page, if loading return loading page
   if (errorCode) {
     return <ErrorPage errorCode={errorCode} />
@@ -121,8 +220,10 @@ export default function PostPage() {
             {/* likes and comment input */}
             <div className="border-t border-gray h-[150px] flex flex-col justify-between">
               <div className="flex flex-col px-3.5 pt-2.5">
-                <button className="w-fit"><img src="/icons/heart.svg" className="w-7"/></button>
-                <h1 className="text-sm font-medium">8 likes</h1>
+                <button className="w-fit" onClick={toggleLike}>
+                  <img src={heartIcon} className="w-7"/>
+                </button>
+                <h1 className="text-sm font-medium">{likes} likes</h1>
                 <h1 className="text-xs font-light text-neutral-400">{getDate(postData.updated_at)}</h1>
               </div>
               <div className="h-fit p-2.5 flex items-center">

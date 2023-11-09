@@ -147,6 +147,7 @@ export default function Search() {
                                                 <p class="right">{post2.created_at}</p>
                                             </div>                                           
                                         </div>
+                                    
                                         {/* Image Carousel */}  
                                         <div class="center"> 
                                             <div class="carousel_container">
@@ -169,23 +170,19 @@ export default function Search() {
                                                 )}
                                                 </div>
                                             </div> 
-                                        </div> 
+                                        </div>  
                                         <div width="600px">
                                             <button onClick={prev}>Prev</button>  
                                             <button class="right" onClick={next}>Next</button>                                          
                                             <h3 class="caption">{post2.caption}</h3>
                                             <br/>
                                         </div>
-
-                                        <Comment postId={post2.post_id} user_id={post2.user_id} /> 
-
                                     </div>
                                 
                                 </div>   
                             ))}
                         </ul>
                     </div>
-
                 </div>
             </div>
         </div>
