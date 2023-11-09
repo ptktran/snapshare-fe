@@ -24,8 +24,9 @@ function App() {
           <Route path="/:username" element={<PrivateRoute user={user}><UserProfile /></PrivateRoute>} />
           <Route path="/post/:postId" element={<PrivateRoute user={user}><PostPage /></PrivateRoute>} />
           <Route path="/something" element={<Navigate to="/" replace />} />
-          <Route path="*" element={<ErrorPage />} />
+          <Route path="/settings" element={<PrivateRoute user={user}><Settings /></PrivateRoute>} />
           <Route path="/search" element={<PrivateRoute user={user}><Search /></PrivateRoute>} />
+          <Route path="*" element={<ErrorPage />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

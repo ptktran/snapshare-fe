@@ -182,8 +182,8 @@ export default function PostPage() {
 
   return (
     <>
-      <main className="ml-0 md:ml-64 flex justify-center items-start">
-        <div className="w-[850px] h-[650px] flex items-center mt-10">
+      <main className="ml-0 md:ml-64 flex justify-center items-start pt-7">
+        <div className="w-[850px] h-[650px] flex items-center">
           {/* render image carousel */}
           {postImages ? (
             <Carousel images={postImages} />

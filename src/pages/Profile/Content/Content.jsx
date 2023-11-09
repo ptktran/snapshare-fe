@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth, supabase } from '../../../auth/Auth';
 import './Content.css';
+import { Link } from 'react-router-dom';
 
 // default function
 export default function Content() {
@@ -352,9 +353,14 @@ export default function Content() {
               <div className="username-tab">
                 <p>{username}</p>
               </div>
-              <button className="standout edit-button" onClick={toggleEditing}>
-                Edit Profile
-              </button>
+              <div className="button-container">
+                <button className="standout edit-button" onClick={toggleEditing}>
+                  Edit Profile
+                </button>
+                <Link className="standout edit-button" to="/settings">
+                  Settings
+                </Link>
+              </div>
               <div className="displayed-items">
                 {bio ? (
                   <p>{bio}</p>
