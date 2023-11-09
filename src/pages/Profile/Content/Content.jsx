@@ -108,12 +108,42 @@ export default function Content() {
   };
 
 
+  // This function gets posts that the current user has liked
+  async function getLikedPosts() {
+    try {
+      // First, get the IDs of the posts that the user has liked
+      const { data: likedData, error: likedError } = await supabase
+        .from('user_likes')
+        .select('post_id')
+        .eq('user_id', user.id); // Get likes from current user
+      if (likedError) throw likedError;
+      // If there are liked posts, then get those posts
+      if (likedData != null) {
+        // Extracting all the post IDs that the user has liked
+        const postIds = likedData.map((like) => like.post_id);
+        // Now get the posts details by the post IDs
+        const { data: postsData, error: postsError } = await supabase
+          .from('posts')
+          .select('*')
+          .in('post_id', postIds); // Get posts that have an ID in the postIds array
+        if (postsError) throw postsError;
+        if (postsData != null) {
+          setLikedPosts(postsData);
+        }
+      }
+    } catch (error) {
+      alert(error.message);
+    }
+  }
+
   //////posts section
   const [image_url, setImage_url] = useState("");
   const [caption, setCaption] = useState("");
   const [posts, setPosts] = useState([]);
   const [post2, setPost2] = useState([]);
   const [post3, setPost3] = useState([]);
+  const [likedPosts, setLikedPosts] = useState([]);
+  const [currentView, setCurrentView] = useState('posts');
 
   console.log(image_url);
   console.log(caption);
@@ -181,7 +211,7 @@ export default function Content() {
       }
   }
 
- 
+
   //pop up form
   function openEdit(postId){
     document.getElementById("myForm").style.display = "block";
@@ -343,19 +373,39 @@ export default function Content() {
           )}
         </div>
       </div>
-      {/* Conditional rendering for the line and "Posts," "Saved," and "Tagged" buttons */}
+      {/* Conditional rendering for the line and "Posts" and "Liked" buttons */}
       {!isEditing && (
         <>
           <div className="profile-line"></div>
           <div className="profile-buttons">
-            <button className="profile-button">⊞ Posts</button>
-            <button className="profile-button">▽ Saved</button>
-            <button className="profile-button">🏳 Tagged</button>
+            <button className="profile-button" onClick={() => setCurrentView('posts')}>⊞ Posts</button>
+            <button className="profile-button" onClick={() => {setCurrentView('liked'); getLikedPosts();}}>♡ Liked Posts</button>
           </div>
+
+          {/* Liked Posts */}
+            {currentView === 'liked' && (
+              <div className="saved_posts_container">
+                {likedPosts.map((post) => (
+                  <div key={post.post_id} className="post_container">
+                    {post.file_url ? (
+                      isImageLink(post.file_url[0]) ? (
+                        <img src={post.file_url[0]} alt="Image" className="post_content"/>
+                      ) : isVideoLink(post.file_url[0]) ? (
+                        <video src={post.file_url[0]} autoPlay muted loop className="post_content"/>
+                      ) : (
+                        <h1 className="post_content">No media</h1>
+                      )
+                    ) : (
+                      <h1 className="post_content">No media</h1>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
 
           {/* Posts */}
           <div class="posts">
-            {posts.map((post) => (
+            {currentView === 'posts' && posts.map((post) => (
               <div key={post.post_id}>
                 <div class="post_container" onClick={()=>{openImg(post.post_id)}}>
                   <button>
@@ -396,7 +446,7 @@ export default function Content() {
                         <p class="right">{post2.created_at}</p>
                       </div>
                     </div>
-                    
+  
                     <div class="center">
                       <div class="carousel_container">
                         {/* Image Carousel in edit */}
