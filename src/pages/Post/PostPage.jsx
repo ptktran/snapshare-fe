@@ -94,7 +94,11 @@ export default function PostPage() {
             <Link to={`/${username}`} className="h-[50px] border-b border-gray flex items-center justify-between p-2.5 hover:text-foreground/80 ease duration-150">
               <div className="flex items-center gap-2">
                 <div className="h-8 w-8 rounded-full overflow-hidden border border-gray">
-                  <img src={userData.profile_picture_url} className="object-cover h-full w-full"/>
+                  {userData.profile_picture_url ? (
+                    <img src={userData.profile_picture_url} className="w-full h-full object-cover"/>
+                  ) : (
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg" className="w-full h-full object-cover"/>
+                  )}
                 </div>
                 <h1 className="font-semibold text-sm">{username}</h1>
               </div>

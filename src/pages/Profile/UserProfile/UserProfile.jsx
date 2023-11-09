@@ -39,13 +39,6 @@ export default function UserProfile() {
             fetchUserPosts(username)
             setLoading(false)
 
-            if (userData && userData.user_id) {
-              isFollowing();
-              fetchNumberofPosts();
-              fetchNumberOfFollowers();
-              fetchNumberofFollowing();
-            }
-
           } else if (data.status === 404) {
             setErrorCode(data.status)
           }
@@ -55,7 +48,14 @@ export default function UserProfile() {
       }
     }
     fetchUser(username)
-  }, [userData])
+  }, [username])
+
+  useEffect(() => {
+    isFollowing();
+    fetchNumberofPosts();
+    fetchNumberOfFollowers();
+    fetchNumberofFollowing();
+  }, [following, userData])
   
   const fetchUserPosts = async (username) => {
     try {
