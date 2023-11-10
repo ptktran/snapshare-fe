@@ -25,7 +25,7 @@ export default function Navbar() {
             <span className="inline-flex items-center justify-center h-12 w-12 text-2xl md:text-xl text-foreground"><i class="bx bx-search"></i></span>
             <span className="hidden md:block">Search</span>
           </NavLink>
-          <NavLink to="/something" className={ ({ isActive }) => isActive ? linkStyles.active : linkStyles.nonactive }>
+          <NavLink to="/direct-message" className={ ({ isActive }) => isActive ? linkStyles.active : linkStyles.nonactive }>
             <span className="inline-flex items-center justify-center h-12 w-12 text-2xl md:text-xl text-foreground"><i class="bx bx-chat"></i></span>
             <span className="hidden md:block">Messages</span>
           </NavLink>
