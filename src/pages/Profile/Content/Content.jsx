@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth, supabase } from '../../../auth/Auth';
 import './Content.css';
-import Comment from './Comment'; 
 
 // default function
 export default function Content() {
@@ -431,7 +430,8 @@ export default function Content() {
                   <div class="popup" id="myForm">
                     <button onClick={()=>{closeEdit()}}>&times;</button>
                     <button class="right" onClick={()=>{updatePost(post2.post_id)}}>Done</button>
-                        <div class="flex">
+
+                    <div class="flex">
                       <div>
                         {profileImage ? (
                             <img src={profileImage} class="profile_image" />
@@ -522,16 +522,13 @@ export default function Content() {
                     <button class="right" onClick={()=>{deletePost(post3.post_id)}}>Delete Post</button>
                     <br/>
                   </div>
-
-                <Comment postId={post3.post_id} user_id={post3.user_id} />
-
                 </div>
               </div>
             ))}
           </div>
 
         </>
-      )}    
+      )}
     </div>
     </div>
   </div> 

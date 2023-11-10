@@ -2,7 +2,6 @@ import { useAuth, supabase } from "../../auth/Auth";
 import React, { useState, useEffect } from 'react';
 import { Link } from "react-router-dom"
 import './Search.css'
-import Comment from '../Profile/Content/Comment';
 
 export default function Search() {
     const { userA } = useAuth();
@@ -186,6 +185,13 @@ export default function Search() {
                                         <Comment postId={post2.post_id} user_id={post2.user_id} />                    
                                     </div>
                                 
+
+                                    <Link to={`/post/${post.post_id}`}>
+                                        <li key={post.post_id} className="listItem">
+                                        <span>{post.caption}</span>
+                                        </li>
+                                    </Link>                             
+
                                 </div>   
                             ))}
                         </ul>
@@ -194,7 +200,7 @@ export default function Search() {
                 </div>
             </div>
         </div>
-                                       
+
       </main>
     </>
   )
