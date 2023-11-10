@@ -1,0 +1,84 @@
+.button {
+    background-color: gray;
+    border: none;
+    color: whitesmoke;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: block; /* Make it a block element */
+    width: 100%; /* Make the button fill the width of its parent (item1) */
+    font-size: 16px;
+}
+
+.container {
+    display: flex;
+    flex-direction: row;
+    height: 100vh;
+}
+
+.item {
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    flex: 1;
+    padding: 10px;
+}
+
+.item1 {
+    flex: 1; /* Make Item 1 take all vertical space within item */
+    padding: 10px;
+    overflow-y: auto;
+}
+
+.item2 {
+    /* Item 2 styles */
+    display: flex; /* Turn Item 2 into a flex container */
+    flex: 3;
+}
+
+.nested-container {
+    /* Styles for the nested container within Item 2 */
+    display: flex;
+    flex-direction: column; /* Nested container stacks items vertically */
+    flex: 1; /* Nested container takes up all available space */
+    position: relative;
+}
+
+.nested-item {
+    border: 1px solid #888;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.nested-item1 {
+    max-height: 85%; /* Set a maximum height for nested-item 1 */
+    overflow-y: auto; /* Enable vertical scrolling for nested-item 1 */
+    flex: 25;
+    display: flex;
+    flex-direction: column;
+}
+.nested-item2 {
+    flex: 1;
+}
+
+.message-input {
+    display: flex;
+}
+.message-button {
+    flex: 1;
+}
+
+input[type="text"] {
+    flex: 1;
+}
+
+.message {
+    background-color: #007bff; /* Background color for the message box */
+    color: #fff; /* Text color */
+    padding: 10px; /* Padding for the message box */
+    border-radius: 10px; /* Rounded corners for the message box */
+    margin: 10px; /* Margin to separate messages */
+}
+
+.message-text {
+    margin: 0; /* Remove default margin for the <p> element */
+}
