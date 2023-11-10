@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth, supabase } from '../../../auth/Auth';
 import './Content.css';
+import Comment from './Comment';
 
 // default function
 export default function Content() {
