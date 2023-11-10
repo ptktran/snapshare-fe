@@ -19,8 +19,6 @@ export default function DirectMessage() {
 
         const data = await response.json();
 
-        console.log(data["data"][0]);
-
         for (let i = 0; i < data["data"].length; i++) {
             let followingUsersId = data["data"][i]["following_id"];
             let userButton = await document.createElement("button");
@@ -29,7 +27,7 @@ export default function DirectMessage() {
             userButton.innerText = username;
             userButton.className = "item1 button";
             userButton.onclick = () => openChatBox(username, followingUsersId);
-            document.getElementById("userList").appendChild(userButton);
+            await document.getElementById("userList").appendChild(userButton);
             document
                 .getElementById("userList")
                 .appendChild(document.createElement("br"));
@@ -42,21 +40,19 @@ export default function DirectMessage() {
         );
 
         const data = await response.json();
-        console.log(data);
         return data["data"][0]["username"];
     }
 
     async function openChatBox(userName, recievingUserId) {
-        clearDiv("messageContainer");
+        await clearDiv("messageContainer");
 
         const response = await fetch(
             `http://localhost:3000/getMessages/${recievingUserId}`
         );
 
         const data = await response.json();
-        const messages = data["data"];
+        const messages = await data["data"];
 
-        console.log("messages found");
         for (let i = 0; i < messages.length; i++) {
             let tempMessage = await document.createElement("p");
             tempMessage.className = "message";
@@ -78,7 +74,7 @@ export default function DirectMessage() {
     }
 
     async function sendMessage() {
-        let message = document.getElementById("message-input").value;
+        let message = await document.getElementById("message-input").value;
         console.log(message);
     }
 
