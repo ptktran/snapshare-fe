@@ -522,6 +522,7 @@ export default function Content() {
                     <button class="right" onClick={()=>{deletePost(post3.post_id)}}>Delete Post</button>
                     <br/>
                   </div>
+                  <Comment postId={post3.post_id} user_id={post3.user_id} />
                 </div>
               </div>
             ))}
