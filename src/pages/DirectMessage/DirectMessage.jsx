@@ -7,18 +7,27 @@ let socket;
 export default function DirectMessage() {
     const { user } = useAuth();
     const userListLoadedRef = useRef(false);
-    var sending = "";
+    const [sending, setSending] = useState("");
+    const socketRef = useRef();
 
     useEffect(() => {
         if (userListLoadedRef.current) return;
         userListLoadedRef.current = true;
         getFollowers();
         setSocket();
+        socketRef.current = socket;
+
+        return () => {
+            if (socketRef.current) {
+                socketRef.current.disconnect();
+            }
+        };
     }, []);
 
     async function setSocket() {
         socket = await io("http://localhost:3000/", {
             transports: ["websocket", "polling"],
+            reconnection: false,
         });
 
         socket.on(user.id, (arg) => {
@@ -30,21 +39,19 @@ export default function DirectMessage() {
             console.error("Connection Error:", error);
         });
 
-        socket.on(user.id, ({ sendId, msg }) => {
+        socket.on(user.id, async ({ sendId, msg }) => {
             console.log(sendId, msg);
             if (sendId === sending) {
+                const userName = await getUserName(sendId);
+                console.log(userName);
                 let tempMessage = document.createElement("p");
                 tempMessage.className = "message";
-                tempMessage.innerHTML = getUserName(sendId) + ": " + msg;
+                tempMessage.innerHTML = userName + ": " + msg;
                 document.getElementById("messageContainer").append(tempMessage);
                 scrollChatboxToBottom();
                 socket.close();
                 setSocket();
             }
-        });
-
-        socket.onAny((event, ...args) => {
-            console.log("Event:", event, "Arguments:", args);
         });
     }
     async function getFollowers() {
@@ -81,7 +88,7 @@ export default function DirectMessage() {
 
     async function openChatBox(userName, recievingUserId) {
         await clearDiv("messageContainer");
-        sending = recievingUserId;
+        setSending(recievingUserId);
         const response = await fetch(
             `http://localhost:3000/getMessages/${recievingUserId}`
         );
@@ -123,7 +130,6 @@ export default function DirectMessage() {
 
     async function sendMessage() {
         let message = await document.getElementById("message-input").value;
-        console.log(message);
 
         if (socket && sending != "") {
             let tempMessage = await document.createElement("p");
