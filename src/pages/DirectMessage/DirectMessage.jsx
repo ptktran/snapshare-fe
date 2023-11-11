@@ -1,17 +1,52 @@
 import { useAuth } from "../../auth/Auth";
 import React, { useState, useEffect, useRef } from "react";
 import "./DirectMessage.css";
+import { io } from "socket.io-client";
+let socket;
 
 export default function DirectMessage() {
     const { user } = useAuth();
     const userListLoadedRef = useRef(false);
+    var sending = "";
 
     useEffect(() => {
         if (userListLoadedRef.current) return;
         userListLoadedRef.current = true;
         getFollowers();
+        setSocket();
     }, []);
 
+    async function setSocket() {
+        socket = await io("http://localhost:3000/", {
+            transports: ["websocket", "polling"],
+        });
+
+        socket.on(user.id, (arg) => {
+            console.log(arg);
+        });
+        socket.emit("openListen", user.id);
+
+        socket.on("connect_error", (error) => {
+            console.error("Connection Error:", error);
+        });
+
+        socket.on(user.id, ({ sendId, msg }) => {
+            console.log(sendId, msg);
+            if (sendId === sending) {
+                let tempMessage = document.createElement("p");
+                tempMessage.className = "message";
+                tempMessage.innerHTML = getUserName(sendId) + ": " + msg;
+                document.getElementById("messageContainer").append(tempMessage);
+                scrollChatboxToBottom();
+                socket.close();
+                setSocket();
+            }
+        });
+
+        socket.onAny((event, ...args) => {
+            console.log("Event:", event, "Arguments:", args);
+        });
+    }
     async function getFollowers() {
         const response = await fetch(
             `http://localhost:3000/getFollowingList/${user.id}`
@@ -31,6 +66,7 @@ export default function DirectMessage() {
             document
                 .getElementById("userList")
                 .appendChild(document.createElement("br"));
+            scrollChatboxToBottom();
         }
     }
 
@@ -45,7 +81,7 @@ export default function DirectMessage() {
 
     async function openChatBox(userName, recievingUserId) {
         await clearDiv("messageContainer");
-
+        sending = recievingUserId;
         const response = await fetch(
             `http://localhost:3000/getMessages/${recievingUserId}`
         );
@@ -78,6 +114,7 @@ export default function DirectMessage() {
                     .appendChild(tempMessage);
             }
         }
+        scrollChatboxToBottom();
     }
 
     async function clearDiv(id) {
@@ -87,6 +124,22 @@ export default function DirectMessage() {
     async function sendMessage() {
         let message = await document.getElementById("message-input").value;
         console.log(message);
+
+        if (socket && sending != "") {
+            let tempMessage = await document.createElement("p");
+            tempMessage.className = "message";
+            tempMessage.innerHTML =
+                (await getUserName(user.id)) + ": " + message;
+            document.getElementById("messageContainer").append(tempMessage);
+            scrollChatboxToBottom();
+            socket.emit(user.id, { sendId: sending, msg: message });
+            socket.close();
+            setSocket();
+        }
+    }
+    function scrollChatboxToBottom() {
+        let msgContainer = document.getElementById("messageContainer");
+        msgContainer.scrollTop = msgContainer.scrollHeight;
     }
 
     return (
