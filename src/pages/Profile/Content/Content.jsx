@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth, supabase } from '../../../auth/Auth';
 import './Content.css';
 import Comment from './Comment';
+import { Link } from "react-router-dom"
 
 // default function
 export default function Content() {
@@ -14,6 +15,13 @@ export default function Content() {
   const [username, setUsername] = useState('');
   const [isEditing, setIsEditing] = useState(false);
   const [createButtonClicked, setCreateButtonClicked] = useState(false);
+  const [followingCount, setFollowingCount] = useState(0);
+  const [followersCount, setFollowersCount] = useState(0);
+  const [followingUsers, setFollowingUsers] = useState([]);
+  const [showFollowing, setShowFollowing] = useState(false);
+  const [followerUsers, setFollowerUsers] = useState([]);
+  const [showFollower, setShowFollower] = useState(false);
+
 
   // Edit mode + handling changes
   const toggleEditing = () => {
@@ -273,7 +281,144 @@ export default function Content() {
       const videoExtensions = /\.(mp4|webm|ogg|avi|mkv|mov)$/i;
       return videoExtensions.test(url);
   }
+async function fetchFollowingUsers() {
+    try {
+      const { data, error } = await supabase
+        .from('followers')
+        .select('follower_id, following_id')
+        .eq('follower_id', user.id);
+  
+      if (data) {
+        // Extract user IDs from the data
+        const followingUserIds = data.map((item) => item.following_id);
+        // Fetch user profiles based on the extracted user IDs
+        const { data: usersData, error: usersError } = await supabase
+          .from('users123')
+          .select('user_id, username, profile_picture_url')
+          .in('user_id', followingUserIds);
+  
+        if (usersData) {
+          setFollowingUsers(usersData);
+        }
+  
+        if (usersError) {
+          throw usersError;
+        }
+      }
+  
+      if (error) {
+        throw error;
+      }
+    } catch (error) {
+      console.error('An error occurred while fetching following users:', error);
+    }
+  }
+  useEffect(() => {
+    fetchFollowingUsers();
+  }, []);  
 
+  const handleFollowingClick = () => {
+    setShowFollowing(!showFollowing);
+    // Fetch following users only when the button is clicked
+    if (!showFollowing) {
+      fetchFollowingUsers();
+    }
+  };
+
+  async function fetchFollowerUsers() {
+    try {
+      const { data, error } = await supabase
+        .from('followers')
+        .select('follower_id, following_id')
+        .eq('following_id', user.id);
+  
+      if (data) {
+        // Extract user IDs from the data
+        const followerUserIds = data.map((item) => item.follower_id);
+        // Fetch user profiles based on the extracted user IDs
+        const { data: usersData, error: usersError } = await supabase
+          .from('users123')
+          .select('user_id, username, profile_picture_url')
+          .in('user_id', followerUserIds);
+  
+        if (usersData) {
+          setFollowerUsers(usersData);
+        }
+  
+        if (usersError) {
+          throw usersError;
+        }
+      }
+  
+      if (error) {
+        throw error;
+      }
+    } catch (error) {
+      console.error('An error occurred while fetching following users:', error);
+    }
+  }
+  useEffect(() => {
+    fetchFollowerUsers();
+  }, []);  
+
+  const handleFollowerClick = () => {
+    setShowFollower(!showFollower);
+    // Fetch followers only when the button is clicked
+    if (!showFollower) {
+      fetchFollowerUsers();
+    }
+  };
+
+   async function countFollowing() {
+    try {
+      const { data, error } = await supabase
+        .from('followers')
+        .select('follower_id')
+        .eq('following_id', user.id);
+
+        if (data) {
+          setFollowingCount(data.length); 
+        }
+
+      if (error) {
+        throw error;
+      }
+
+      
+    } catch (error) {
+      console.error('An error occurred:', error);
+    }
+  }
+
+  useEffect(() => {
+    countFollowing();
+  }, []);
+  
+
+  async function countFollowers() {
+    try {
+      const { data, error } = await supabase
+        .from('followers')
+        .select('following_id')
+        .eq('follower_id', user.id);
+
+        if (data) {
+          setFollowersCount(data.length); 
+        }
+
+      if (error) {
+        throw error;
+      }
+
+      
+    } catch (error) {
+      console.error('An error occurred:', error);
+    }
+  }
+
+  useEffect(() => {
+    countFollowers();
+  }, []);
 
     
 
@@ -374,6 +519,54 @@ export default function Content() {
           )}
         </div>
       </div>
+
+
+        <div className="f1" >
+            <button onClick={handleFollowerClick}>{followingCount} Followers</button>   
+            <button onClick={handleFollowingClick}>{followersCount} Following</button>
+      </div>
+
+        {showFollower && (
+        <div className="following-users">
+          <h2>My Followers:</h2>
+          <ul>
+            {followerUsers.map((followerUser) => (
+              <li key={followerUser.user_id}>
+                <img
+                  src={followerUser.profile_picture_url || 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg'} 
+                  alt="Profile"
+                  className="following-user-profile-image"
+                />
+                <Link to={`/${followerUser.username}`}>
+                <span>{followerUser.username}</span>
+                </Link>
+              </li>
+              ))}
+          </ul>
+        </div>
+      )}
+
+        {showFollowing && (
+        <div className="following-users">
+          <h2>Following Users:</h2>
+          <ul>
+            {followingUsers.map((followingUser) => (
+              <li key={followingUser.user_id}>
+                <img
+                  src={followingUser.profile_picture_url || 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg'} 
+                  alt="Profile"
+                  className="following-user-profile-image"
+                />
+                <Link to={`/${followingUser.username}`}>
+                <span>{followingUser.username}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+        
       {/* Conditional rendering for the line and "Posts" and "Liked" buttons */}
       {!isEditing && (
         <>
