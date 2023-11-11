@@ -54,18 +54,29 @@ export default function DirectMessage() {
         const messages = await data["data"];
 
         for (let i = 0; i < messages.length; i++) {
-            let tempMessage = await document.createElement("p");
-            tempMessage.className = "message";
-            if (messages[i].recievingUserId === user.id) {
+            if (
+                messages[i].recievingUserId === user.id &&
+                messages[i].sendingUserId === recievingUserId
+            ) {
+                let tempMessage = await document.createElement("p");
+                tempMessage.className = "message";
                 tempMessage.innerHTML =
                     "" + userName + ": " + messages[i].message;
-            } else {
+                document
+                    .getElementById("messageContainer")
+                    .appendChild(tempMessage);
+            } else if (
+                messages[i].recievingUserId === recievingUserId &&
+                messages[i].sendingUserId === user.id
+            ) {
+                let tempMessage = await document.createElement("p");
+                tempMessage.className = "message";
                 tempMessage.innerHTML =
                     (await getUserName(user.id)) + ": " + messages[i].message;
+                document
+                    .getElementById("messageContainer")
+                    .appendChild(tempMessage);
             }
-            document
-                .getElementById("messageContainer")
-                .appendChild(tempMessage);
         }
     }
 
@@ -87,15 +98,7 @@ export default function DirectMessage() {
                         <div
                             class="nested-item nested-item1"
                             id="messageContainer"
-                        >
-                            <p class="message">Sample Message 1</p>
-                            <p class="float-right message">Sample Message 2</p>
-                            <p class="float-right message">Sample Message 3</p>
-                            <p class="message">Sample Message 4</p>
-                            <p class="float-right message">Sample Message 5</p>
-                            <p class="float-right message">Sample Message 6</p>
-                            <p class="message">Sample Message 7</p>
-                        </div>
+                        ></div>
                         <div class="nested-item nested-item2">
                             <div class="message-input">
                                 <input
