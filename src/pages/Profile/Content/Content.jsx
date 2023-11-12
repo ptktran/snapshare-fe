@@ -498,14 +498,19 @@ async function fetchFollowingUsers() {
               <div className="username-tab">
                 <p>{username}</p>
               </div>
-              <button className="standout edit-button" onClick={toggleEditing}>
-                Edit Profile
-              </button>
+              <div className="button-container">
+                <button className="standout edit-button" onClick={toggleEditing}>
+                  Edit Profile
+                </button>
+                <Link className="standout edit-button" to="/settings">
+                  Settings
+                </Link>
+              </div>
               <div className="displayed-items">
                 {bio ? (
                   <p>{bio}</p>
                 ) : (
-                  <p>null</p>
+                  <p></p>
                 )}
                 {website && (
                   <p>
