@@ -365,7 +365,7 @@ export default function Content() {
                 {bio ? (
                   <p>{bio}</p>
                 ) : (
-                  <p>null</p>
+                  <p></p>
                 )}
                 {website && (
                   <p>
