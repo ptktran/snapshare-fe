@@ -10,7 +10,6 @@ export default function Home() {
  const { user } = useAuth();
  const [posts, setPosts] = useState([]);
 
-
  //get post from users the logged in user is following
  async function getFollowersFeed() {
    try {
@@ -44,6 +43,7 @@ export default function Home() {
      alert(error.message);
    }
  }
+ 
   useEffect(() => {
    getFollowersFeed();
  }, [user]);
@@ -66,15 +66,15 @@ export default function Home() {
   <>
     <main className="ml-0 md:ml-64">
       <div className="content-container p-9 w-full">
-        <div className="posts">
-          <h1 className="text-3xl font-bold text-center">Home</h1>
-          {posts.map((post) => (
+        <div className="post-container">
+          <h1 className="text-3xl font-bold text-left">Home</h1>
+          {posts && posts.map((post) => (
             <div key={post.post_id} className="post_block">
               <h1>{post.user_id}</h1>
               <div>
                 {post.file_url ? (
                   isImageLink(post.file_url[0]) || isVideoLink(post.file_url[0]) ? (
-                    <Carousel images={post.file_url} />
+                    <Carousel images={post.file_url} cover={false} />
                   ) : (
                     <h1>No media</h1>
                   )
@@ -86,6 +86,11 @@ export default function Home() {
               <h2>Post Caption: {post.caption}</h2>
             </div>
           ))}
+          {posts.length === 0 && (
+            <div>
+              <h1 className="text-neutral-500">No posts to show yet...</h1>
+            </div>
+          )}
         </div>
       </div>
     </main>

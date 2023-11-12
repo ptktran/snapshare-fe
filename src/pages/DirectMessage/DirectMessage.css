@@ -1,13 +1,24 @@
 .button {
-    background-color: gray;
     border: none;
     color: whitesmoke;
     padding: 15px 32px;
     text-align: center;
     text-decoration: none;
+    transition: background-color ease 150ms;
     display: block; /* Make it a block element */
     width: 100%; /* Make the button fill the width of its parent (item1) */
     font-size: 16px;
+    border-radius: 0.5rem;
+    border: 1px solid #404040;
+    font-weight:600;
+}
+
+.button:hover {
+    background-color: #262626;
+}
+
+.selected {
+    background-color: #262626;
 }
 
 .container {
@@ -17,7 +28,6 @@
 }
 
 .item {
-    border: 1px solid #ccc;
     box-sizing: border-box;
     flex: 1;
     padding: 10px;
@@ -27,6 +37,10 @@
     flex: 1; /* Make Item 1 take all vertical space within item */
     padding: 10px;
     overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    border-right: 1px solid #404040;
 }
 
 .item2 {
@@ -44,7 +58,6 @@
 }
 
 .nested-item {
-    border: 1px solid #888;
     padding: 10px;
     box-sizing: border-box;
 }
@@ -62,13 +75,12 @@
 
 .message-input {
     display: flex;
-}
-.message-button {
-    flex: 1;
+    gap: 15px;
 }
 
 input[type="text"] {
     flex: 1;
+    outline: none;
 }
 
 .message {

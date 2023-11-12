@@ -186,7 +186,7 @@ export default function PostPage() {
         <div className="w-[850px] h-[650px] flex items-center">
           {/* render image carousel */}
           {postImages ? (
-            <Carousel images={postImages} />
+            <Carousel images={postImages} cover={true}/>
           ) : (<h1>An error has occured, please try again later.</h1>)}
           {/* banner with username, profile pic and date */}
           <section className="w-[450px] border border-gray h-full flex flex-col justify-between">

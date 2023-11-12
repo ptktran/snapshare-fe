@@ -2,12 +2,15 @@ import { useAuth } from "../../auth/Auth";
 import React, { useState, useEffect, useRef } from "react";
 import "./DirectMessage.css";
 import { io } from "socket.io-client";
+import { Link } from "react-router-dom";
 let socket;
 
 export default function DirectMessage() {
     const { user } = useAuth();
     const userListLoadedRef = useRef(false);
     const [sending, setSending] = useState("");
+    const [username, setUsername] = useState("")
+    const [sendingUsername, setSendingUsername] = useState("")
     const socketRef = useRef();
 
     useEffect(() => {
@@ -65,9 +68,10 @@ export default function DirectMessage() {
             let followingUsersId = data["data"][i]["following_id"];
             let userButton = await document.createElement("button");
             let username = await getUserName(followingUsersId);
+            setUsername(await getUserName(user.id))
 
             userButton.innerText = username;
-            userButton.className = "item1 button";
+            userButton.className = `button ${sending === followingUsersId ? "selected" : ""}`;
             userButton.onclick = () => openChatBox(username, followingUsersId);
             await document.getElementById("userList").appendChild(userButton);
             document
@@ -79,7 +83,7 @@ export default function DirectMessage() {
 
     async function getUserName(userId) {
         const response = await fetch(
-            `http://localhost:3000/getUserName/${userId}`
+            `http://localhost:3000/getUsername/${userId}`
         );
 
         const data = await response.json();
@@ -89,6 +93,9 @@ export default function DirectMessage() {
     async function openChatBox(userName, recievingUserId) {
         await clearDiv("messageContainer");
         setSending(recievingUserId);
+        const sendingUser = await getUserName(recievingUserId)
+        setSendingUsername(sendingUser)
+        
         const response = await fetch(
             `http://localhost:3000/getMessages/${recievingUserId}`
         );
@@ -129,6 +136,7 @@ export default function DirectMessage() {
     }
 
     async function sendMessage() {
+        let messageInput = document.getElementById("message-input");
         let message = await document.getElementById("message-input").value;
 
         if (socket && sending != "") {
@@ -141,6 +149,7 @@ export default function DirectMessage() {
             socket.emit(user.id, { sendId: sending, msg: message });
             socket.close();
             setSocket();
+            messageInput.value = "";
         }
     }
     function scrollChatboxToBottom() {
@@ -151,27 +160,41 @@ export default function DirectMessage() {
     return (
         <main className="ml-0 md:ml-64">
             <div class="container">
-                <div class="item item1" id="userList"></div>
+                <div class="item item1" id="userList">
+                  <h1 className="text-xl font-semibold py-2 mb-3 border-b border-gray">Inbox</h1>
+                </div>
                 <div class="item item2">
                     <div class="nested-container">
+                        {username && (
+                            <>
+                                {sendingUsername && 
+                                    (<Link 
+                                      className="border border-gray rounded-lg font-semibold px-5 py-3 hover:text-foreground/80 duration-150 ease"
+                                      to={`/${sendingUsername}`}>{sendingUsername}</Link>)}
+                            </>
+                        )}
                         <div
                             class="nested-item nested-item1"
                             id="messageContainer"
-                        ></div>
+                        >
+                        </div>
                         <div class="nested-item nested-item2">
-                            <div class="message-input">
-                                <input
-                                    type="text"
-                                    id="message-input"
-                                    placeholder="Type your message..."
-                                ></input>
-                                <button
-                                    id="send-button message-button"
-                                    onClick={sendMessage}
-                                >
-                                    Send
-                                </button>
-                            </div>
+                            {sending && (
+                              <div class="message-input">
+                                  <input
+                                      type="text"
+                                      id="message-input"
+                                      placeholder="Type your message..."
+                                  ></input>
+                                  <button
+                                      id="send-button message-button"
+                                      className="text-accent hover:text-accent/80 ease duration-150 font-semibold text-lg"
+                                      onClick={sendMessage}
+                                  >
+                                      Send
+                                  </button>
+                              </div>
+                            )}
                         </div>
                     </div>
                 </div>
