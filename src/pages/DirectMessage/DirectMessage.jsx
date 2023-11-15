@@ -28,7 +28,7 @@ export default function DirectMessage() {
     }, []);
 
     async function setSocket() {
-        socket = await io("http://localhost:3000/", {
+        socket = await io(`${import.meta.env.VITE_BACKEND_URL}`, {
             transports: ["websocket", "polling"],
             reconnection: false,
         });
@@ -59,7 +59,7 @@ export default function DirectMessage() {
     }
     async function getFollowers() {
         const response = await fetch(
-            `http://localhost:3000/getFollowingList/${user.id}`
+            `${import.meta.env.VITE_BACKEND_URL}/getFollowingList/${user.id}`
         );
 
         const data = await response.json();
@@ -83,7 +83,7 @@ export default function DirectMessage() {
 
     async function getUserName(userId) {
         const response = await fetch(
-            `http://localhost:3000/getUsername/${userId}`
+            `${import.meta.env.VITE_BACKEND_URL}/getUsername/${userId}`
         );
 
         const data = await response.json();
@@ -97,7 +97,7 @@ export default function DirectMessage() {
         setSendingUsername(sendingUser)
         
         const response = await fetch(
-            `http://localhost:3000/getMessages/${recievingUserId}`
+            `${import.meta.env.VITE_BACKEND_URL}/getMessages/${recievingUserId}`
         );
 
         const data = await response.json();

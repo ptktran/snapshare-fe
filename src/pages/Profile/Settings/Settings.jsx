@@ -24,7 +24,7 @@ export default function Settings() {
 
   const fetchUsername = async (userId) => {
     try {
-      await fetch(`http://localhost:3000/getUsername/${userId}`)
+      await fetch(`${import.meta.env.VITE_BACKEND_URL}/getUsername/${userId}`)
       .then(response => {
         return response.json()
       }).then(data => {
@@ -42,7 +42,7 @@ export default function Settings() {
 
   const fetchUser = async (username) => {
     try {
-      await fetch(`http://localhost:3000/getUserInfo/${username}`)
+      await fetch(`${import.meta.env.VITE_BACKEND_URL}/getUserInfo/${username}`)
       .then(response => {
         return response.json()
       }).then(data => {
@@ -59,7 +59,7 @@ export default function Settings() {
   }
 
   const deleteUser = async (userid) => {
-    await fetch(`http://localhost:3000/deleteUser/${userid}`, {
+    await fetch(`${import.meta.env.VITE_BACKEND_URL}/deleteUser/${userid}`, {
       method: 'DELETE'
     }).then(response => {
       return response.json()

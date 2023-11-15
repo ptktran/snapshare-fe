@@ -27,7 +27,7 @@ export default function UserProfile() {
   useEffect(() => {
     const fetchUser = async (username) => {
       try {
-        await fetch(`http://localhost:3000/getUserInfo/${username}`)
+        await fetch(`${import.meta.env.VITE_BACKEND_URL}/getUserInfo/${username}`)
         .then(response => {
           return response.json()
         }).then(data => {
@@ -59,7 +59,7 @@ export default function UserProfile() {
   
   const fetchUserPosts = async (username) => {
     try {
-      await fetch(`http://localhost:3000/getUserPosts/${username}`)
+      await fetch(`${import.meta.env.VITE_BACKEND_URL}/getUserPosts/${username}`)
       .then(response => {
         return response.json()
       }).then(data => {

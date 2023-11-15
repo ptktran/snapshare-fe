@@ -31,7 +31,7 @@ export default function PostPage() {
   // fetch post and user info from backend
   const fetchUserPost = async (postId) => {
     try {
-      await fetch(`http://localhost:3000/getPost/${postId}`)
+      await fetch(`${import.meta.env.VITE_BACKEND_URL}/getPost/${postId}`)
       .then(response => {
         return response.json()
       }).then(data => {
@@ -51,7 +51,7 @@ export default function PostPage() {
 
   const fetchUsername = async (userId) => {
     try {
-      await fetch(`http://localhost:3000/getUsername/${userId}`)
+      await fetch(`${import.meta.env.VITE_BACKEND_URL}/getUsername/${userId}`)
       .then(response => {
         return response.json()
       }).then(data => {
@@ -69,7 +69,7 @@ export default function PostPage() {
 
   const fetchUser = async (username) => {
     try {
-      await fetch(`http://localhost:3000/getUserInfo/${username}`)
+      await fetch(`${import.meta.env.VITE_BACKEND_URL}/getUserInfo/${username}`)
       .then(response => {
         return response.json()
       }).then(data => {
