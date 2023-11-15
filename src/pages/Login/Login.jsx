@@ -19,6 +19,7 @@ export default function Login() {
           <div className="w-full sm:max-w-[600px] p-10 rounded-2xl bg-neutral-950 font-space-mono">
             <Auth supabaseClient={supabase} 
               providers={['google', 'discord']}
+              redirectTo='https://snapshare-cgg.vercel.app'
               appearance={{
                 theme: ThemeSupa,
                 variables: {
