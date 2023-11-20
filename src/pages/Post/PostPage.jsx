@@ -5,6 +5,7 @@ import Carousel from "../../components/Carousel/Carousel";
 import { getDate } from "../../utils/DateFormatter";
 import Loader from "../../components/Loader/Loader";
 import { useAuth, supabase } from '../../auth/Auth';
+import './ReportModal.css';
 
 export default function PostPage() {
   const { postId } = useParams()
@@ -18,8 +19,11 @@ export default function PostPage() {
   const { user } = useAuth();
   const [heartIcon, setHeartIcon] = useState("/icons/heart.svg");
   const [isLiked, setIsLiked] = useState(false);
+  const [showReportModal, setShowReportModal] = useState(false);
+  const [reportReason, setReportReason] = useState('');
+  const [customReason, setCustomReason] = useState('');
 
-
+  
   useEffect(() => {
     fetchUserPost(postId)
     fetchLikes(postId);
@@ -172,6 +176,78 @@ export default function PostPage() {
     }
   };
 
+  // Pop up for report
+  const toggleReportModal = () => {
+    setShowReportModal(!showReportModal);
+  };
+
+  // Reporting posts
+  const submitReport = async () => {
+    // Check if a reason is selected or not
+    if (!reportReason || (reportReason === 'other' && !customReason)) {
+      console.log('No report reason selected');
+      return; 
+    }
+    const reasonToSubmit = reportReason === 'other' && customReason ? customReason : reportReason;
+    const { data, error } = await supabase
+      .from('reports')
+      .insert([
+        { post_id: postId, report_reason: reasonToSubmit, user_id: user.id }
+      ]);
+    if (error) {
+      console.error('Error submitting report:', error);
+    } else {
+      console.log('Report submitted:', data);
+      setCustomReason('');
+      setReportReason('');
+      toggleReportModal(); 
+    }
+  };
+
+  // Report Modal Component
+  const ReportModal = () => {
+    // Input ref to maintain focus on text field
+    const inputRef = React.useRef(null);
+    // Effect to focus input when "Other" is selected
+    React.useEffect(() => {
+      if (reportReason === 'other') {
+        inputRef.current.focus();
+      }
+    }, [reportReason]);
+
+    return (
+      <div className="report-modal-backdrop">
+        <div className="report-modal-content">
+          <h2>Report Post</h2>
+          <select value={reportReason} onChange={(e) => setReportReason(e.target.value)} className="report-select">
+            <option value="" disabled hidden>Select a Reason</option>
+            <option value="spam">It's spam</option>
+            <option value="inappropriate">It's inappropriate</option>
+            <option value="abusive">It's abusive or harmful</option>
+            <option value="false information">It contains false information</option>
+            <option value="off topic">It's off-topic</option>
+            <option value="other">Other</option>
+          </select>
+          {reportReason === 'other' && (
+            <input
+              ref={inputRef} // Attach the ref to the input
+              type="text"
+              placeholder="Please specify..."
+              value={customReason}
+              onChange={(e) => setCustomReason(e.target.value)}
+              className="custom-reason-input"
+            />
+          )}
+          <div>
+            <button onClick={submitReport}>Submit Report</button>
+            <button onClick={toggleReportModal}>Cancel</button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+
 
   // if no post is found return error page, if loading return loading page
   if (errorCode) {
@@ -217,23 +293,36 @@ export default function PostPage() {
               </div>
             </div>
             
-            {/* likes and comment input */}
-            <div className="border-t border-gray h-[150px] flex flex-col justify-between">
-              <div className="flex flex-col px-3.5 pt-2.5">
-                <button className="w-fit" onClick={toggleLike}>
-                  <img src={heartIcon} className="w-7"/>
-                </button>
-                <h1 className="text-sm font-medium">{likes} likes</h1>
-                <h1 className="text-xs font-light text-neutral-400">{getDate(postData.updated_at)}</h1>
+            {/* Div for likes, date and report icon */}
+            <div className="flex justify-between items-start p-3 border-b border-gray">
+              <div className="flex flex-col">
+                {/* Like button and likes count */}
+                <div className="flex items-center">
+                  <button onClick={toggleLike}>
+                    <img src={heartIcon} className="w-7"/>
+                  </button>
+                  <span className="text-sm font-medium pl-2">{likes} likes</span>
+                </div>
+                {/* Date */}
+                <span className="text-xs font-light text-neutral-400 pt-1">{getDate(postData.updated_at)}</span>
               </div>
-              <div className="h-fit p-2.5 flex items-center">
-                <input placeholder="Add a comment..." className="bg-background w-full text-sm p-1 outline-none"></input>
-                <button className="text-accent font-medium text-sm hover:text-accent/80 ease duration-150">Post</button>
-              </div>
+
+              {/* Report button */}
+              <button onClick={toggleReportModal} className="report-flag-btn">
+                <img src="/icons/report.png" alt="Report" />
+              </button>
+            </div>
+
+            {/* Comment input section */}
+            <div className="flex items-center p-2.5">
+              <input placeholder="Add a comment..." className="bg-background w-full text-sm p-1 outline-none"></input>
+              <button className="text-accent font-medium text-sm hover:text-accent/80 ease duration-150 ml-2">Post</button>
             </div>
           </section>
         </div>
       </main>
+      {/* Conditionally render the Report Modal */}
+      {showReportModal && <ReportModal />}
     </>
-  )
+  );
 }
