@@ -142,12 +142,17 @@ export default function Search() {
                                     <div class="popup" id="imagePop">
                                         <button onClick={()=>{closeImg()}}>&times;</button>
 
-                                        <div class="flex">                                           
-                                            <img src="https://cdn141.picsart.com/357697367045201.jpg" class="profile_image" />
-                                            <div className="block">              
-                                                <h3><a href={post2.user_id}>{post2.user_id}</a></h3>
-                                                <p class="right">{post2.created_at}</p>
-                                            </div>                                           
+                                        <div class="flex justify-between items-center">      
+                                            <div className="flex">
+                                              <img src="https://cdn141.picsart.com/357697367045201.jpg" class="profile_image" />
+                                              <div className="block">              
+                                                  <h3><a href={post2.user_id}>{post2.user_id}</a></h3>
+                                                  <p class="right">{post2.created_at}</p>
+                                              </div>  
+                                            </div>                                     
+                                            <div>
+                                              <Link to={`/post/${post2.post_id}`} className="p-2.5 hover:bg-black hover:text-[#e21362] rounded-[10px]">Go to post</Link>       
+                                            </div>                                    
                                         </div>
 
                                         
@@ -184,15 +189,7 @@ export default function Search() {
                                         </div>
 
                                         <Comment postId={post2.post_id} user_id={post2.user_id} />                    
-                                    </div>
-                                
-
-                                    <Link to={`/post/${post.post_id}`}>
-                                        <li key={post.post_id} className="listItem">
-                                        <span>{post.caption}</span>
-                                        </li>
-                                    </Link>                             
-
+                                    </div>                      
                                 </div>   
                             ))}
                         </ul>
