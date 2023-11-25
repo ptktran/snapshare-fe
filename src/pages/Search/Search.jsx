@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { Routes, Route, Link } from 'react-router-dom';
 import './Search.css'
 import Comment from '../Profile/Content/Comment';
-import Hashtag from './HashtagPage';
 
 export default function Search() {
     const { userA } = useAuth();
@@ -47,12 +46,14 @@ export default function Search() {
 
                 // Extract hashtags from post captions
                 const allHashtags = data.reduce((hashtagsArray, post) => {
-                    const regexp = /\B\#\w\w+\b/g;
-                    const result = post.caption.match(regexp);
-                    if (result) {
-                        hashtagsArray.push(...result);
+                    var regexp = /#(\w+)/g;
+                    let result;
+
+                    while ((result = regexp.exec(post.caption)) !== null) {
+                        // result[0] contains the entire match, result[1] contains the first capturing group
+                        hashtagsArray.push(result[1]);
                     }
-                    return hashtagsArray;
+                    return hashtagsArray;                                   
                 }, []);
 
                 setHashtags(Array.from(new Set(allHashtags))); // Remove duplicates
