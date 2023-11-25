@@ -13,7 +13,7 @@ export default function Navbar() {
   };
   return (
     <>
-      <nav className="fixed bottom-0 w-full md:w-64 bg-background overflow-hidden md:h-full border-t md:border-r md:border-t-0 border-gray px-1 md:p-2.5">
+      <nav className="z-50 fixed bottom-0 w-full md:w-64 bg-background overflow-hidden md:h-full border-t md:border-r md:border-t-0 border-gray px-1 md:p-2.5">
         <Link
           to="/"
           className="hidden md:flex items-center justify-left p-4 gap-3 ease duration-150 active:scale-95"
