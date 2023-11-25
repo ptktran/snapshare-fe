@@ -1,6 +1,6 @@
 import { useAuth, supabase } from "../../auth/Auth";
 import React, { useState, useEffect } from 'react';
-import { Link } from "react-router-dom"
+import { Routes, Route, Link } from 'react-router-dom';
 import './Search.css'
 import Comment from '../Profile/Content/Comment';
 
@@ -11,6 +11,8 @@ export default function Search() {
     const [post2, setPost2] = useState([]);
     const [query, setQuery] = useState("");
     const [query2, setQuery2] = useState("");
+    const [query3, setQuery3] = useState("");
+    const [hashtags, setHashtags] = useState([]);
 
     // Gets the user profile 
     async function getUsers() {
@@ -32,16 +34,31 @@ export default function Search() {
     //get posts 
     async function getPosts() {
         try {
-        const { data, error } = await supabase
-            .from('posts')
-            .select('*')
-            .order('post_id', { ascending:false });     //recent post first
-    
-        if (error) throw error;
-    
-        if (data != null) {
-            setPosts(data);
-        }
+            const { data, error } = await supabase
+                .from('posts')
+                .select('*')
+                .order('post_id', { ascending:false });     //recent post first
+
+            if (error) throw error;
+        
+            if (data != null) {
+                setPosts(data);
+
+                // Extract hashtags from post captions
+                const allHashtags = data.reduce((hashtagsArray, post) => {
+                    var regexp = /#(\w+)/g;
+                    let result;
+
+                    while ((result = regexp.exec(post.caption)) !== null) {
+                        // result[0] contains the entire match, result[1] contains the first capturing group
+                        hashtagsArray.push(result[1]);
+                    }
+                    return hashtagsArray;                                   
+                }, []);
+
+                setHashtags(Array.from(new Set(allHashtags))); // Remove duplicates
+            }
+
         } catch (error) {
           alert(error.message);
         }
@@ -98,6 +115,7 @@ export default function Search() {
         return videoExtensions.test(url);
     }
 
+
     return (
     <>
       <main className="ml-0 md:ml-64">
@@ -123,6 +141,29 @@ export default function Search() {
                     </div>
 
                 </div>
+                <br/>
+                
+                {/* Hashtag Search */}
+                <h1 className="text-xl font-bold">Hashtag Search</h1>
+                <div class="search_bar">
+                    <input type="text" placeholder="Search posts with hashtags..." className="search" onChange={e => setQuery3(e.target.value)}/>
+
+                        <div className="search_results">
+                            <ul className="list">
+                                {hashtags
+                                    .filter((hashtag) => hashtag.toLowerCase().includes(query3))
+                                    .map((hashtag) => (
+                                        <Link to={`/hashtag/${hashtag}`}>
+                                            <li className="listItem" key={hashtag}>
+                                                <span>{hashtag}</span>
+                                            </li>
+                                        </Link>
+                                    ))}
+                            </ul>
+
+                        </div>                   
+                </div>
+
                 
                 <br/>
                 {/* Post Search */}
@@ -134,7 +175,9 @@ export default function Search() {
                             {posts.filter((post) =>
                                 post.caption.toLowerCase().includes(query2)).map((post) => (
                                 <div>
-                                    <li key={post.post_id} className="listItem" onClick={()=>{openImg(post.post_id)}}>{post.caption}</li>
+                                    <li key={post.post_id} className="listItem" onClick={()=>{openImg(post.post_id)}}>
+                                        {post.caption}
+                                    </li>
                                     
                                    {/* <Comment postId={post.post_id} user_id={post.user_id} /> */}
 
@@ -142,19 +185,13 @@ export default function Search() {
                                     <div class="popup" id="imagePop">
                                         <button onClick={()=>{closeImg()}}>&times;</button>
 
-                                        <div class="flex justify-between items-center">      
-                                            <div className="flex">
-                                              <img src="https://cdn141.picsart.com/357697367045201.jpg" class="profile_image" />
-                                              <div className="block">              
-                                                  <h3><a href={post2.user_id}>{post2.user_id}</a></h3>
-                                                  <p class="right">{post2.created_at}</p>
-                                              </div>  
-                                            </div>                                     
-                                            <div>
-                                              <Link to={`/post/${post2.post_id}`} className="p-2.5 hover:bg-black hover:text-[#e21362] rounded-[10px]">Go to post</Link>       
-                                            </div>                                    
+                                        <div class="flex">                                           
+                                            <img src="https://cdn141.picsart.com/357697367045201.jpg" class="profile_image" />
+                                            <div className="block">              
+                                                <h3><a href={post2.user_id}>{post2.user_id}</a></h3>
+                                                <p class="right">{post2.created_at}</p>
+                                            </div>                                           
                                         </div>
-
                                         
 
                                         {/* Image Carousel */}  
@@ -189,7 +226,13 @@ export default function Search() {
                                         </div>
 
                                         <Comment postId={post2.post_id} user_id={post2.user_id} />                    
-                                    </div>                      
+                                    </div>
+                                
+                                    <Link to={`/post/${post.post_id}`}>
+                                        <li key={post.post_id} className="listItem">
+                                        <span>{post.caption}</span>
+                                        </li>
+                                    </Link>                             
                                 </div>   
                             ))}
                         </ul>
