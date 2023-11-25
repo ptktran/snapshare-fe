@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 
-export default function Carousel({ images }) {
+export default function Carousel({ images, cover }) {
   // carousel component, takes in an array of image urls
   const [currentIndex, setCurrentIndex] = useState(0)
   
@@ -25,12 +25,19 @@ export default function Carousel({ images }) {
 
   return (
     <div className="max-w-[1400px] h-[650px] w-full m-auto relative group">
-      <div className="w-full h-full ease duration-400}">
-        {isImage(images[currentIndex]) ? (
-          <img src={images[currentIndex]} alt="post-image" className="h-full w-full object-cover"/>
-        ) : (
-          <video src={images[currentIndex]} controls loop class="h-full w-full object-fit" />
-        )}
+      <div className="w-full h-full">
+      {isImage(images[currentIndex]) ? (
+        <>
+          {cover ? (
+            <img src={images[currentIndex]} alt="post-image" className="h-full w-full object-cover" />  
+          ) : (
+            <img src={images[currentIndex]} alt="post-image" className="h-full w-full object-contain" />
+          )}
+        </>
+      ) : (
+       <video src={images[currentIndex]} controls loop className="h-full w-full object-cover" />
+      )}
+
       </div>
       {/* Left Arrow */}
       <button onClick={prevSlide} className="hidden group-hover:block absolute top-[50%] -translate-x-0 translate-y-[-50%] left-2 text-xl rounded-full p-1 bg-white/50">

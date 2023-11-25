@@ -2,6 +2,7 @@ import { useAuth, supabase } from "../../auth/Auth";
 import React, { useState, useEffect } from 'react';
 import { Link } from "react-router-dom"
 import './Search.css'
+import Comment from '../Profile/Content/Comment';
 
 export default function Search() {
     const { userA } = useAuth();
@@ -133,15 +134,67 @@ export default function Search() {
                             {posts.filter((post) =>
                                 post.caption.toLowerCase().includes(query2)).map((post) => (
                                 <div>
-                                    <Link to={`/post/${post.post_id}`}>
-                                        <li key={post.post_id} className="listItem">
-                                        <span>{post.caption}</span>
-                                        </li>
-                                    </Link>                             
+                                    <li key={post.post_id} className="listItem" onClick={()=>{openImg(post.post_id)}}>{post.caption}</li>
+                                    
+                                   {/* <Comment postId={post.post_id} user_id={post.user_id} /> */}
+
+                                    {/* Popup image */}     
+                                    <div class="popup" id="imagePop">
+                                        <button onClick={()=>{closeImg()}}>&times;</button>
+
+                                        <div class="flex justify-between items-center">      
+                                            <div className="flex">
+                                              <img src="https://cdn141.picsart.com/357697367045201.jpg" class="profile_image" />
+                                              <div className="block">              
+                                                  <h3><a href={post2.user_id}>{post2.user_id}</a></h3>
+                                                  <p class="right">{post2.created_at}</p>
+                                              </div>  
+                                            </div>                                     
+                                            <div>
+                                              <Link to={`/post/${post2.post_id}`} className="p-2.5 hover:bg-black hover:text-[#e21362] rounded-[10px]">Go to post</Link>       
+                                            </div>                                    
+                                        </div>
+
+                                        
+
+                                        {/* Image Carousel */}  
+                                        <div class="center"> 
+                                            <div class="carousel_container">
+                                                {/* Image Carousel in edit */}
+                                                {getSlides(post2.file_url)}
+                                            
+                                                <div class="carousel" style={{ transform: `translateX(-${curr * 100}%)` }}>
+                                                {Array.isArray(slides) ? (
+                                                    slides.map((slide) => (
+                                                    isImageLink(slide) ? (
+                                                        <img src={slide} alt="Image" class="carousel_content"/>
+                                                    ) : isVideoLink(slide) ? (
+                                                        <video src={slide} controls loop class="carousel_content" />
+                                                    ) : (
+                                                        <h1 class="carousel_content">No media</h1>
+                                                    )
+                                                    ))
+                                                ) : (
+                                                    <h1>No slides to display</h1>
+                                                )}
+                                                </div>
+                                            </div> 
+                                        </div> 
+                                
+                                        <div width="600px">
+                                            <button onClick={prev}>Prev</button>  
+                                            <button class="right" onClick={next}>Next</button>                                          
+                                            <h3 class="caption">{post2.caption}</h3>
+                                            <br/>
+                                        </div>
+
+                                        <Comment postId={post2.post_id} user_id={post2.user_id} />                    
+                                    </div>                      
                                 </div>   
                             ))}
                         </ul>
                     </div>
+
                 </div>
             </div>
         </div>

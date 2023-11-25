@@ -24,7 +24,7 @@ export default function Login() {
                 variables: {
                   default: {
                     colors: {
-                      // brand: '#e5e5e5',
+                      brand: '#0a0a0a',
                       brandAccent: '#89AAE6',
                       brandButtonText: '#e5e5e5',
                       inputText: "#e5e5e5",

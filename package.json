@@ -14,12 +14,14 @@
     "@supabase/auth-ui-react": "^0.4.6",
     "@supabase/auth-ui-shared": "^0.1.8",
     "@supabase/supabase-js": "^2.38.4",
+    "framer-motion": "^10.16.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-drag-drop-files": "^2.3.10",
     "react-dropzone": "^14.2.3",
     "react-hot-toast": "^2.4.1",
-    "react-native-drop-zone": "^1.0.24"
+    "react-native-drop-zone": "^1.0.24",
+    "socket.io-client": "^4.7.2"
   },
   "devDependencies": {
     "@types/react": "^18.2.15",

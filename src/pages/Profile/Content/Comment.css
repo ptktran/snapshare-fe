@@ -1,0 +1,59 @@
+/* Comment Stylin*/
+
+
+.comment-button-container {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+    margin-top: 10px; 
+  }
+  
+
+  .comment {
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+ 
+  .comment-text {
+    font-size: 16px;
+  }
+  
+
+  .comment-user {
+    font-weight: bold;
+  }
+  
+
+  .comment-input {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+  }
+  
+ 
+  .textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: vertical;
+  }
+  
+
+  .comment-button {
+    margin-top: 10px;
+    padding: 8px 16px;
+    background-color: #0073e6;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .comment-button:hover {
+    background-color: #0056b3;
+  }
+  
