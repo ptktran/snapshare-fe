@@ -125,7 +125,7 @@ const CreatePost = () => {
       <form className="p-9 w-full" onSubmit={handleSubmit}>
         <div className="text-3xl font-bold text-center">Create a Post</div>
         <div {...getRootProps({
-          className: 'p-16 mt-10 border border-neutral-200'
+          className: 'p-16 mt-10 border border-gray rounded-lg'
         })}>
           <input {...getInputProps()} />
           {isDragActive ? (
@@ -136,7 +136,7 @@ const CreatePost = () => {
         </div>
         
         {files.length > 0 && (
-          <h3 className='title text-lg font-semibold text-white mt-10 border-b pb-3'>
+          <h3 className='title text-lg font-semibold text-foreground mt-10 border-b border-gray pb-3'>
             Accepted Files
           </h3>
         )}
@@ -176,7 +176,7 @@ const CreatePost = () => {
         </ul>
 
         <textarea 
-          className="w-full h-1/4 mt-10 text-black p-2"
+          className="w-full h-1/4 mt-10 text-foreground bg-gray outline-none rounded-lg p-2.5"
           placeholder='Enter the caption for your post'
           value={caption}
           onChange={e => setCaption(e.target.value)}
@@ -185,7 +185,7 @@ const CreatePost = () => {
         <div className="flex justify-center">
           <button
             type="submit"
-            className="mt-3 text-md uppercase tracking-wider font-bold text-black border rounded-md px-3 py-2 mb-8 bg-neutral-400 hover:bg-neutral-500 transition-colors"
+            className="mt-5 text-md uppercase font-bold text-foreground bg-gray rounded-md px-4 py-2 hover:bg-blue-500 transition-colors"
           >
             Upload
           </button>

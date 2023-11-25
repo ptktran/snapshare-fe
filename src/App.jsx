@@ -12,6 +12,7 @@ import UserProfile from './pages/Profile/UserProfile/UserProfile'
 import PostPage from './pages/Post/PostPage'
 import ErrorPage from './pages/Error/ErrorPage'
 import DirectMessage from './pages/DirectMessage/DirectMessage'
+import Hashtag from './pages/Search/Hashtag'
 
 function App() {
   const { user } = useAuth()
@@ -24,10 +25,12 @@ function App() {
           <Route path="/profile" element={<PrivateRoute user={user}><Content /></PrivateRoute>} />
           <Route path="/:username" element={<PrivateRoute user={user}><UserProfile /></PrivateRoute>} />
           <Route path="/post/:postId" element={<PrivateRoute user={user}><PostPage /></PrivateRoute>} />
+          <Route path="/hashtag/:hashtag" element={<PrivateRoute user={user}><Hashtag /></PrivateRoute>} />
           <Route path="/direct-message" element={<PrivateRoute user={user}><DirectMessage /></PrivateRoute>}/>
           <Route path="/something" element={<Navigate to="/" replace />} />
-          <Route path="*" element={<ErrorPage />} />
+          <Route path="/settings" element={<PrivateRoute user={user}><Settings /></PrivateRoute>} />
           <Route path="/search" element={<PrivateRoute user={user}><Search /></PrivateRoute>} />
+          <Route path="*" element={<ErrorPage />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

@@ -72,6 +72,40 @@ export default function Home() {
     setLoading(false);
   }
 }
+
+ //get post from users the logged in user is following
+ async function getFollowersFeed() {
+   try {
+     //to Get the IDs of users the logged-in user is following
+     const { data: followingData, error: followingError } = await supabase
+       .from('followers')
+       .select('following_id')
+       .eq('follower_id', user.id);
+      if (followingError) {
+       throw followingError;
+     }
+      if (!followingData || followingData.length === 0) {
+       // No users followed by the logged-in user
+       setPosts([]);
+       return;
+     }
+      const followingIds = followingData.map((follow) => follow.following_id);
+      //to Get posts from users the logged-in user is following
+     const { data: postsData, error: postsError } = await supabase
+       .from('posts')
+       .select('*')
+       .in('user_id', followingIds)
+       .order('post_id', { ascending: false });
+      if (postsError) {
+       throw postsError;
+     }
+      if (postsData !== null) {
+       setPosts(postsData);
+     }
+   } catch (error) {
+     alert(error.message);
+   }
+ }
  
   useEffect(() => {
    getFollowersFeed();
