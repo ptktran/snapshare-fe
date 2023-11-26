@@ -11,5 +11,6 @@ npm install @supabase/supabase-js
 npm install react-router-dom
 npm install --save react-dropzone
 npm install @heroicons/react
+npm install axios
 
 A localhost URL should be available afterwards
