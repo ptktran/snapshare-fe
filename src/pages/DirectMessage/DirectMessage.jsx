@@ -12,6 +12,7 @@ export default function DirectMessage() {
     const [username, setUsername] = useState("")
     const [sendingUsername, setSendingUsername] = useState("")
     const socketRef = useRef();
+    const [emailNotificationStatus, setEmailNotificationStatus] = useState(true); 
 
     useEffect(() => {
         if (userListLoadedRef.current) return;
@@ -156,12 +157,42 @@ export default function DirectMessage() {
         let msgContainer = document.getElementById("messageContainer");
         msgContainer.scrollTop = msgContainer.scrollHeight;
     }
+//////////////////////////////////////////////////////////////////////////////
+async function updateEmailNotificationStatus(newStatus) {
+    try {
+        const response = await fetch(`http://localhost:3000/updateEmailNotificationStatus/${user.id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email_notification_status: newStatus }),
+        });
 
+        const data = await response.json();
+        console.log(data);
+
+        // Update the emailNotificationStatus
+        setEmailNotificationStatus(newStatus);
+        
+    } catch (error) {
+        console.error("Error updating email notification status:", error);
+    }
+}
     return (
         <main className="ml-0 md:ml-64">
             <div class="container">
                 <div class="item item1" id="userList">
                   <h1 className="text-xl font-semibold py-2 mb-3 border-b border-gray">Inbox</h1>
+
+                   {/*Email Notification Status */}
+                <button
+                    id="toggle-email-notification-button"
+                    className="text-accent hover:text-accent/80 ease duration-150 font-semibold text-lg"
+                    onClick={() => updateEmailNotificationStatus(!emailNotificationStatus)}
+                >
+                    {emailNotificationStatus ? "Disable Email Notifications" : "Enable Email Notifications"}
+                </button>
+
                 </div>
                 <div class="item item2">
                     <div class="nested-container">
