@@ -16,6 +16,7 @@
     "@supabase/auth-ui-react": "^0.4.6",
     "@supabase/auth-ui-shared": "^0.1.8",
     "@supabase/supabase-js": "^2.38.4",
+    "axios": "^1.6.2",
     "date-fns": "^2.30.0",
     "framer-motion": "^10.16.4",
     "nodemailer": "^6.9.7",
