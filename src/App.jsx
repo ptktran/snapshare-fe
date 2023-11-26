@@ -5,6 +5,7 @@ import Navbar from './components/Navbar/Navbar'
 import CreatePost from './pages/Create/CreatePost/CreatePost'
 import Content from './pages/Profile/Content/Content'
 import Settings from './pages/Profile/Settings/Settings'
+import YourActivity from './pages/Profile/Settings/Activity'
 import Login from './pages/Login/Login'
 import Search from './pages/Search/Search'
 import PrivateRoute from './routes/PrivateRoute'
@@ -31,6 +32,7 @@ function App() {
           <Route path="/direct-message" element={<PrivateRoute user={user}><DirectMessage /></PrivateRoute>}/>
           <Route path="/notifications" element={<PrivateRoute user={user}><Notification /></PrivateRoute>} />
           <Route path="/settings" element={<PrivateRoute user={user}><Settings /></PrivateRoute>} />
+           <Route path="/youractivity" element={<PrivateRoute user={user}><YourActivity /></PrivateRoute>} />
           <Route path="/search" element={<PrivateRoute user={user}><Search /></PrivateRoute>} />
           <Route path="/Form" element={<PrivateRoute user={user}><Form /></PrivateRoute>} />
           <Route path="*" element={<ErrorPage />} />
