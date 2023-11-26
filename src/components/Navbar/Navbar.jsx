@@ -68,7 +68,7 @@ export default function Navbar() {
                         <span className="hidden md:block">Create</span>
                     </NavLink>
                     <NavLink
-                        to="/something"
+                        to="/notifications"
                         className={({ isActive }) =>
                             isActive ? linkStyles.active : linkStyles.nonactive
                         }

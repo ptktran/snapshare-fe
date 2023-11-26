@@ -22,6 +22,8 @@ export default function UserProfile() {
   const [numberOfPosts, setNumberOfPosts] = useState(0)
   const [numberOfFollowers, setNumberOfFollowers] = useState(0)
   const [numberOfFollowing, setNumberOfFollowing] = useState(0)
+  const [currentUsername, setCurrentUsername] = useState("")
+
 
   // fetch user data and check if account is owned by user
   useEffect(() => {
@@ -55,6 +57,7 @@ export default function UserProfile() {
     fetchNumberofPosts();
     fetchNumberOfFollowers();
     fetchNumberofFollowing();
+    fetchUsername();
   }, [following, userData])
   
   const fetchUserPosts = async (username) => {
@@ -143,6 +146,46 @@ export default function UserProfile() {
     }
   }
 
+  const fetchUsername = async () => {
+    const { data, error } = await supabase
+    .from('users123')
+    .select('username')
+    .eq('user_id', user.id)
+
+    if (data) {
+      setCurrentUsername(data[0].username)
+    }
+    if (error) {
+      console.log(error)
+    }
+  }
+
+  const sendEmail = async () => {
+    var message = "is following you on Snapshare.";
+    var message2 = "Log into Snapshare to view your new follower.";
+    var subject = "You Have a New Follower!";
+
+    const response = await fetch('http://localhost:3000/sendEmail', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ username: currentUsername, email: userData.email, message: message, message2: message2, subject: subject}),
+    })
+    if (response.status === 200) {
+      console.log("Email sent successfully")
+    }
+
+    const { error } = await supabase
+    .from('notification')
+    .insert([{user_id: user.id, interacter_id: userData.user_id, user_username: currentUsername, interacter_username: userData.username, profile_link: currentUsername, interaction_type: "follow"}])
+    .select()
+
+    if (error) {
+      console.log(error)
+    }
+  }
+
   const handleFollow = async () => {
     if (following === true ){
       const {error } = await supabase
@@ -176,6 +219,7 @@ export default function UserProfile() {
       setFollowing(true)
       setHoverColour("bg-accent")
       setFollowColour("bg-gray")
+      sendEmail();
     }
   }
 

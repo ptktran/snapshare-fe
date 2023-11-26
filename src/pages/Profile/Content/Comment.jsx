@@ -9,6 +9,10 @@ function Comment({ postId, user_id }) {
   const [usernames, setUsernames] = useState({});
   const [commentText, setCommentText] = useState('');
   const [editingCommentId, setEditingCommentId] = useState(null);
+  const [currentUsername, setCurrentUsername] = useState("")
+  const [userData, setUserData] = useState([])
+  const [posterUsername, setPosterUsername] = useState("")
+  const [errorCode, setErrorCode] = useState()
 
 
   //fetch
@@ -29,10 +33,8 @@ function Comment({ postId, user_id }) {
     }
   };
 
-
-
   useEffect(() => {
-
+    console.log(user_id)
     //fetch usernames
     async function fetchUsernames() {
       try {
@@ -57,6 +59,12 @@ function Comment({ postId, user_id }) {
     fetchComments();
     fetchUsernames();
   }, [postId, editingCommentId]);
+
+  useEffect(() => {
+    getPosterUsername()
+    fetchUser(posterUsername)
+    getUsername()
+  },[user_id, posterUsername, userData])
 
   const handleCommentSubmit = async () => {
     if (!user) {
@@ -109,8 +117,8 @@ function Comment({ postId, user_id }) {
 
         // Fetch the updated comments 
         await fetchComments();
-
         setCommentText('');
+        sendEmail()
       } catch (error) {
         console.error('Error adding comment:', error);
         alert('An error occurred while adding your comment.');
@@ -127,7 +135,77 @@ function Comment({ postId, user_id }) {
     setEditingCommentId(null);
     setCommentText('');
   };
-  
+
+  const getUsername = async () => {
+    const { data, error } = await supabase
+    .from('users123')
+    .select('username')
+    .eq('user_id', user.id)
+
+    if (data) {
+      setCurrentUsername(data[0].username)
+    }
+    if (error) {
+      console.log(error)
+    }
+  }
+
+  const getPosterUsername = async () => {
+    const { data, error } = await supabase
+    .from('users123')
+    .select('username')
+    .eq('user_id', user_id)
+
+    if (data) {
+      setPosterUsername(data[0].username)
+    }
+    if (error) {
+      console.log(error)
+    }
+  }
+
+  const fetchUser = async (username) => {
+    try {
+      await fetch(`http://localhost:3000/getUserInfo/${username}`)
+      .then(response => {
+        return response.json()
+      }).then(data => {
+        if (data.status === 200) {
+          setUserData(data.data[0])
+        } else if (data.status === 404) {
+          setErrorCode(data.status)
+        }
+      })
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const sendEmail = async () => {
+    var message = "commented on your post on Snapshare.";
+    var message2 = "Log into Snapshare to view your commented post.";
+    var subject = "Someone Commented on Your Post!";
+    const response = await fetch('http://localhost:3000/sendEmail', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ username: currentUsername, email: userData.email, message: message, message2: message2, subject: subject}),
+    })
+    if (response.status === 200) {
+      console.log("Email sent successfully")
+    }
+
+    const { error } = await supabase
+    .from('notification')
+    .insert([{user_id: user.id, interacter_id: userData.user_id, user_username: currentUsername, interacter_username: userData.username, profile_link: currentUsername, interaction_type: "comment", post_link: `/post/${postId}`}])
+    .select()
+
+    if (error) {
+      console.log(error)
+    }
+  }
+
 
   return (
     <div className="comment-container">
