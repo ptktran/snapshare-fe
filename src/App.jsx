@@ -12,6 +12,8 @@ import UserProfile from './pages/Profile/UserProfile/UserProfile'
 import PostPage from './pages/Post/PostPage'
 import ErrorPage from './pages/Error/ErrorPage'
 import DirectMessage from './pages/DirectMessage/DirectMessage'
+import Form from './pages/Feedback/Form'
+
 
 function App() {
   const { user } = useAuth()
@@ -28,6 +30,7 @@ function App() {
           <Route path="/something" element={<Navigate to="/" replace />} />
           <Route path="/settings" element={<PrivateRoute user={user}><Settings /></PrivateRoute>} />
           <Route path="/search" element={<PrivateRoute user={user}><Search /></PrivateRoute>} />
+          <Route path="/Form" element={<PrivateRoute user={user}><Form /></PrivateRoute>} />
           <Route path="*" element={<ErrorPage />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
