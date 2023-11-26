@@ -151,10 +151,7 @@ export default function Settings() {
             <button onClick={() => setShowModal(true)} className="bg-gray px-5 py-1.5 rounded-lg text-sm font-medium hover:bg-red-500 hover:text-foreground text-red-400 ease duration-150">Delete my account</button>
           </div>
         </section>
-        <Modal isVisible={showModal} onClose={() => setShowModal(false)} cancelMsg={"Cancel"} action={() => deleteUser(user.id)} actionMsg={"Proceed"}>
-          <header className="w-full rounded-t-xl border-b border-gray p-4">
-            <h1 className="font-semibold text-lg">Delete your account?</h1>
-          </header>
+        <Modal isVisible={showModal} onClose={() => setShowModal(false)} cancelMsg={"Cancel"} action={() => deleteUser(user.id)} actionMsg={"Proceed"} title={"Delete your account"}>
           <section className="w-full p-6">
             <div className="w-full flex flex-col items-center justify-center py-3 gap-1">
               {userData.profile_picture_url ? (
