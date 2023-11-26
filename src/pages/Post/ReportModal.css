@@ -1,0 +1,67 @@
+/* ReportModal.css */
+
+.report-modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent backdrop */
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .report-modal-content {
+    background-color: #333; /* Dark grey background */
+    color: #fff; /* White text for contrast */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Slightly darker shadow for depth */
+    z-index: 1001;
+    display: flex;
+    flex-direction: column;
+    max-width: 500px;
+    width: 90%;
+  }
+  
+  .report-modal-content h2,
+  .report-modal-content select,
+  .report-modal-content button {
+    color: #fff; /* Ensuring all text is white for contrast against dark background */
+  }
+  
+  .report-modal-content select {
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    background-color: #444; /* Slightly lighter grey for the dropdown */
+    border: 1px solid #555; /* Border color for the dropdown */
+  }
+  
+  .report-modal-content button {
+    padding: 0.5rem;
+    margin-right: 0.5rem;
+    cursor: pointer;
+    background-color: #555; /* Button background */
+    border: none; /* Remove border for a cleaner look */
+  }
+  
+  .report-modal-content button:last-child {
+    margin-right: 0;
+  }
+
+  .custom-reason-input {
+    padding: 0.5rem;
+    margin-top: 1rem;
+    color: #fff; /* Text color */
+    background-color: #444; /* Background color */
+    border: 1px solid #555; /* Border color */
+    border-radius: 4px; /* Rounded corners */
+  }
+
+  .report-flag-btn img {
+    width: 22px; /* or any size that fits your design */
+    height: auto; /* maintains the aspect ratio */
+    margin-top: 4px; /* adjust the pixels as needed to shift down */
+  }

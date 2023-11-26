@@ -23,11 +23,11 @@ function Comment({ postId, user_id }) {
         .select('id, user_id, comment_text, created_at, updated_at')
         .eq('post_id', postId);
 
-      if (error) {
-        console.error('Error fetching comments:', error);
-      } else {
-        setComments(data);
-      }
+      // if (error) {
+      //   console.error('Error fetching comments:', error);
+      // } else {
+      //   setComments(data);
+      // }
     } catch (error) {
       console.error('Error fetching comments:', error);
     }

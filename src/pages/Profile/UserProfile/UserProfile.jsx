@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router-dom"
 import ErrorPage from "../../Error/ErrorPage"
 import { useAuth, supabase} from "../../../auth/Auth"
 import { useNavigate } from "react-router-dom"
+import Modal from "../../../components/Modal/Modal"
 import Loader from "../../../components/Loader/Loader"
 
 export default function UserProfile() {
@@ -12,7 +13,8 @@ export default function UserProfile() {
   const [userPosts, setUserPosts] = useState({})
   const [msg, setMsg] = useState()
   const [errorCode, setErrorCode] = useState()
-  const [ownAccount, setOwnAccount] = useState(false)
+  const [showFollowers, setShowFollowers] = useState(false)
+  const [showFollowings, setShowFollowings] = useState(false)
   const [loading, setLoading] = useState(true)
 
   const [following, setFollowing] = useState(false)
@@ -20,13 +22,13 @@ export default function UserProfile() {
   const [followColour, setFollowColour] = useState("");
   const [hoverColour, setHoverColour] = useState("");
   const [numberOfPosts, setNumberOfPosts] = useState(0)
-  const [numberOfFollowers, setNumberOfFollowers] = useState(0)
-  const [numberOfFollowing, setNumberOfFollowing] = useState(0)
   const [currentUsername, setCurrentUsername] = useState("")
-
+  const [followers, setFollowers] = useState([])
+  const [followings, setFollowings] = useState([])
 
   // fetch user data and check if account is owned by user
   useEffect(() => {
+    let isMounted = true
     const fetchUser = async (username) => {
       try {
         await fetch(`http://localhost:3000/getUserInfo/${username}`)
@@ -34,14 +36,10 @@ export default function UserProfile() {
           return response.json()
         }).then(data => {
           if (data.status === 200) {
-            if (data.data[0].user_id === user.id) {
-              setOwnAccount(true)
-            }
             setUserData(data.data[0])
             fetchUserPosts(username)
             setLoading(false)
-
-          } else if (data.status === 404) {
+          } else {
             setErrorCode(data.status)
           }
         })
@@ -50,14 +48,18 @@ export default function UserProfile() {
       }
     }
     fetchUser(username)
+
+    return () => {
+      isMounted = false;
+    }
   }, [username])
 
   useEffect(() => {
     isFollowing();
     fetchNumberofPosts();
-    fetchNumberOfFollowers();
-    fetchNumberofFollowing();
     fetchUsername();
+    fetchFollowers();
+    fetchFollowings();
   }, [following, userData])
   
   const fetchUserPosts = async (username) => {
@@ -68,6 +70,7 @@ export default function UserProfile() {
       }).then(data => {
         if (data.status === 200) {
           setUserPosts(data.data)
+          setNumberOfPosts(data.data.length)
         } else if (data.status === 400) {
           setMsg("No Posts Yet")
         }
@@ -104,47 +107,68 @@ export default function UserProfile() {
     }
   }
 
-  const fetchNumberofPosts = async () => {
-    const { data, error } = await supabase
-    .from('posts')
-    .select('post_id')
-    .eq('user_id', userData.user_id)
-
-    if (data) {
-      setNumberOfPosts(data.length)
+  const fetchUserData = async (userId) => {
+    try {
+      const response = await fetch(`http://localhost:3000/getUsernameInfo/${userId}`);
+      const data = await response.json();
+  
+      if (data.status === 200) {
+        return data.data[0]
+      } else if (data.status === 404) {
+        console.log("Info unavailable");
+        return null;
+      }
+    } catch (error) {
+      console.log(error);
+      return null;
     }
-    if (error) {
-      console.log(error)
+  };
+  
+  const fetchFollowers = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('followers')
+        .select('follower_id')
+        .eq('following_id', userData.user_id)
+  
+      if (data) {
+        const followerIds = data.map((follower) => follower.follower_id)
+        const userDataPromises = followerIds.map((followerId) => fetchUserData(followerId))
+        const userDataList = await Promise.all(userDataPromises)
+        setFollowers(userDataList.filter(Boolean))
+        // setNumberOfFollowers(data.length)
+      }
+  
+      if (error) {
+        console.log(error)
+      }
+    } catch (error) {
+      console.error('Error fetching followers:', error)
     }
-  }
-
-  const fetchNumberOfFollowers = async () => {
-    const { data, error } = await supabase
-    .from('followers')
-    .select('follower_id')
-    .eq('following_id', userData.user_id)
-
-    if (data) {
-      setNumberOfFollowers(data.length)
+  };
+  
+  const fetchFollowings = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('followers')
+        .select('following_id')
+        .eq('follower_id', userData.user_id);
+  
+      if (data) {
+        const followingIds = data.map((following) => following.following_id)
+        const userDataPromises = followingIds.map((followingId) => fetchUserData(followingId))
+        const userDataList = await Promise.all(userDataPromises)
+        setFollowings(userDataList.filter(Boolean)) // Filter out null values
+        // setNumberOfFollowing(data.length)
+      }
+  
+      if (error) {
+        console.log(error)
+      }
+    } catch (error) {
+      console.error('Error fetching followings:', error)
     }
-    if (error) {
-      console.log(error)
-    }
-  }
-
-  const fetchNumberofFollowing = async () => {
-    const { data, error } = await supabase
-    .from('followers')
-    .select('following_id')
-    .eq('follower_id', userData.user_id)
-
-    if (data) {
-      setNumberOfFollowing(data.length)
-    }
-    if (error) {
-      console.log(error)
-    }
-  }
+  };  
 
   const fetchUsername = async () => {
     const { data, error } = await supabase
@@ -255,7 +279,7 @@ export default function UserProfile() {
             <div className="flex items-center gap-8">
               <h1 className="font-medium text-xl">{userData.username}</h1>
               <div className="flex items-center gap-4">
-                {ownAccount ? (
+                {userData.user_id === user.id ? (
                   <Link to="/profile" className="bg-gray px-5 py-1.5 rounded-lg text-sm font-medium hover:bg-accent ease duration-150">Edit Profile</Link>
                 ) : (
                   <>
@@ -263,15 +287,17 @@ export default function UserProfile() {
                       onClick={handleFollow}
                       className={`${followColour} hover:${hoverColour} px-5 py-1.5 rounded-lg text-sm font-medium duration-150 ease`}>{followText}
                     </button>
-                    <button className="bg-blue-500 px-5 py-1.5 rounded-lg text-sm font-medium hover:bg-blue-600 ease duration-150">Message</button>
+                    {following && (
+                      <Link to="/direct-message" className="bg-blue-500 px-5 py-1.5 rounded-lg text-sm font-medium hover:bg-blue-600 ease duration-150">Message</Link>
+                    )}
                   </>
                 )}
               </div>
             </div>
             <div className="flex items-center gap-10">
               <h1><b>{numberOfPosts}</b> posts</h1>
-              <h1><b>{numberOfFollowers}</b> followers</h1>
-              <h1><b>{numberOfFollowing}</b> following</h1>
+              <button onClick={() => setShowFollowers(true)} className="hover:text-foreground/80 ease duration-150"><b>{followers ? followers.length : 0}</b> followers</button>
+              <button onClick={() => setShowFollowings(true)} className="hover:text-foreground/80 ease duration-150"><b>{followings ? followings.length : 0}</b> following</button>
             </div>
             <div className="flex flex-col gap-2">
               <h1>{userData.user_bio}</h1>
@@ -303,6 +329,47 @@ export default function UserProfile() {
           )}
         </section>
       </main>
+      <Modal title={"Followers"} isVisible={showFollowers} onClose={() => setShowFollowers(false)}>
+        <div className="pt-2">
+          {followers && followers.map((follower, index) => (
+            <Link key={index} to={`/${follower.username}`} onClick={() => setShowFollowers(false)} className="py-2.5 px-4 flex items-center gap-2 hover:bg-lightgray ease duration-150">
+              {follower.profile_picture_url ? (
+              <div className="w-[40px] h-[40px] rounded-full overflow-hidden">
+                <img src={follower.profile_picture_url} className="w-full h-full object-cover"/>
+              </div>
+            ) : (
+              <img src="https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg" 
+                className="rounded-full w-[40px]" />
+            )}
+              <div className="flex flex-col">
+                <h1 className="font-semibold text-sm leading-tight">{follower.username}</h1>
+                <h1 className="font-light text-sm leading-tight">{follower.user_bio}</h1>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </Modal>
+
+      <Modal title={"Following"} isVisible={showFollowings} onClose={() => setShowFollowings(false)}>
+        <div className="pt-2">
+          {followings && followings.map((following, index) => (
+            <Link key={index} to={`/${following.username}`} onClick={() => setShowFollowings(false)} className="py-2.5 px-4 flex items-center gap-2 hover:bg-lightgray ease duration-150">
+              {following.profile_picture_url ? (
+                <div className="w-[40px] h-[40px] rounded-full overflow-hidden">
+                  <img src={following.profile_picture_url} className="w-full h-full object-cover"/>
+                </div>
+              ) : (
+                <img src="https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg" 
+                  className="rounded-full w-[40px]" />
+              )}
+              <div className="flex flex-col">
+                <h1 className="font-semibold text-sm leading-tight">{following.username}</h1>
+                <h1 className="font-light text-sm leading-tight">{following.user_bio}</h1>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </Modal>
     </>
   )
 }
