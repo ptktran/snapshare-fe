@@ -514,20 +514,21 @@ export default function Content() {
                   </div>
                   <div className="button-container">
                     <button
-                      className="standout edit-button"
+                      className="standout edit-button px-5 py-2 text-sm md:text-base"
                       onClick={toggleEditing}
                     >
                       Edit Profile
                     </button>
-                    <Link className="standout edit-button" to="/settings">
+                    <Link className="standout edit-button px-5 py-2 text-sm md:text-base" to="/settings">
                       Settings
                     </Link>
                   </div>
                   <div className="displayed-items">
-                    {bio ? <p>{bio}</p> : <p></p>}
+                    {bio ? <p className="text-sm md:text-base">{bio}</p> : <p></p>}
                     {website && (
                       <p>
                         <a
+                          className="text-sm md:text-base"
                           href={website}
                           target="_blank"
                           rel="noopener noreferrer"
@@ -543,10 +544,10 @@ export default function Content() {
           </div>
 
           <div className="f1">
-            <button onClick={handleFollowerClick} className="hover:opacity-80 ease duration-150">
+            <button onClick={handleFollowerClick} className="hover:opacity-80 ease duration-150 text-sm md:text-base">
               <b>{followingCount}</b> followers
             </button>
-            <button onClick={handleFollowingClick} className="hover:opacity-80 ease duration-150">
+            <button onClick={handleFollowingClick} className="hover:opacity-80 ease duration-150 text-sm md:text-base">
               <b>{followersCount}</b> following
             </button>
           </div>
@@ -603,13 +604,13 @@ export default function Content() {
               <div className="bg-gray h-[1px] mt-6"></div>
               <div className="profile-buttons">
                 <button
-                  className="profile-button"
+                  className="profile-button text-sm md:text-base"
                   onClick={() => setCurrentView("posts")}
                 >
                   ⊞ Posts
                 </button>
                 <button
-                  className="profile-button"
+                  className="profile-button text-sm md:text-base"
                   onClick={() => {
                     setCurrentView("liked");
                     getLikedPosts();

@@ -131,15 +131,15 @@ const CreatePost = () => {
           {isDragActive ? (
             <p>Drop files here ...</p>
           ) : (
-            <p className="text-center"> Drag and drop some files here, or click to select files</p>
+            <p className="text-center font-normal"> Drag and drop some files here, or click to select files</p>
           )}
         </div>
         
-        {files.length > 0 && (
+        {/* {files.length > 0 && (
           <h3 className='title text-lg font-semibold text-foreground mt-10 border-b border-gray pb-3'>
             Accepted Files
           </h3>
-        )}
+        )} */}
         {/** Preview */}
 
         <ul className="mt-6 grid grid-cols-3 md:grid-cols-4 xl:grid-cols-8 gap-10">

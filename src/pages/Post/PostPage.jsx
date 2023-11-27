@@ -138,10 +138,36 @@ export default function PostPage() {
         await fetchComments(postId);
         toast.success('Your comment has been posted!', { id: 'comment-success' })
         setCommentText('');
+        sendEmailComment()
       } catch (error) {
         console.error('Error adding comment:', error);
         toast.error('An error occurred while adding your comment', { id: 'comment-error' })
       }
+    }
+  }
+
+  const sendEmailComment = async () => {
+    var message = "commented on your post on Snapshare.";
+    var message2 = "Log into Snapshare to view your commented post.";
+    var subject = "Someone Commented on Your Post!";
+    const response = await fetch('http://localhost:3000/sendEmail', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ username: currentUsername, email: userData.email, message: message, message2: message2, subject: subject}),
+    })
+    if (response.status === 200) {
+      console.log("Email sent successfully")
+    }
+
+    const { error } = await supabase
+    .from('notification')
+    .insert([{user_id: user.id, interacter_id: userData.user_id, user_username: currentUsername, interacter_username: userData.username, profile_link: currentUsername, interaction_type: "comment", post_link: `/post/${postId}`}])
+    .select()
+
+    if (error) {
+      console.log(error)
     }
   }
 
@@ -411,7 +437,7 @@ export default function PostPage() {
         <Toaster toastOptions={{
           duration: 2000,
         }}/>
-        <div className="w-full flex-col md:flex-row md:w-[850px] md:h-[650px] flex items-center border border-gray">
+        <div className="w-full flex-col md:flex-row md:w-[850px] md:h-[650px] flex items-center border border-gray mb-12 md:mb-0">
           <Link to={`/${username}`} className="flex w-full md:hidden h-[50px] border-b border-gray items-center justify-between p-3 hover:text-foreground/80 ease duration-150">
             <div className="flex items-center gap-2">
               <div className="h-8 w-8 rounded-full overflow-hidden border border-gray">
@@ -423,17 +449,10 @@ export default function PostPage() {
           </Link>
           {/* render image carousel */}
           {postImages ? (
-            <>
-              <div className="hidden md:block">
-                <Carousel images={postImages} cover={true} />
-              </div>
-              <div className="block md:hidden">
-                <Carousel images={postImages} cover={false} />
-              </div>
-            </>
+              <Carousel images={postImages} cover={false} />
           ) : (<h1>An error has occured, please try again later.</h1>)}
           {/* banner with username, profile pic and date */}
-          <section className="w-full md:w-[450px] h-full flex flex-col justify-between md:border-l border-gray border-b md:border-b-0 mb-12 md:mb-0">
+          <section className="w-full md:w-[450px] h-full flex flex-col justify-between md:border-l border-gray">
             <Link to={`/${username}`} className="hidden md:flex h-[50px] border-b border-gray items-center justify-between p-3 hover:text-foreground/80 ease duration-150">
               <div className="flex items-center gap-2">
                 <div className="h-8 w-8 rounded-full overflow-hidden border border-gray">

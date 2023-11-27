@@ -4,7 +4,7 @@
     }
 }
 
-@media (min-width: 300) {
+@media (min-width: 300px) {
     .page-container {
         margin-left: 0;
     }
@@ -126,14 +126,14 @@
 }
 
 /* Add black text on inputs */
-input[type="text"],
+/* input[type="text"],
 input[type="url"],
 #bio { 
     background-color: #333;
     padding: 10px;
     border-radius: 5px;
     width: 100%;
-}
+} */
 
 .standout {
     background-color: #333; /* Background color for the button */

@@ -82,11 +82,13 @@ const Form = () => {
     return(
         <main className="ml-0 md:ml-64">
         <section>
-            <div className="conatiner">
+            <div className="pt-8 w-full max-w-[600px] m-auto">
                 <h2 className = "text-center">Contact Form</h2>
                 <form className="form-control card" onSubmit={(e) => {e.preventDefault(); setName(''); setEmail(''); setSubject(''); setRating(0); setMessage('');}} >
-                    <input type="text" placeholder='Name' name='name' value = {name} onChange={(e) => setName(e.target.value)} required />
-                    <input type="text" placeholder='Email' name='email' value = {email} onChange={(e) => setEmail(e.target.value)} required />
+                    <input type="text" placeholder='Name' name='name' value = {name} onChange={(e) => setName(e.target.value)}
+                      className="w-full p-2.5 mb-2.5 border border-gray rounded box-border" required />
+                    <input type="text" placeholder='Email' name='email' value = {email} onChange={(e) => setEmail(e.target.value)}
+                      className="w-full p-2.5 mb-2.5 border border-gray rounded box-border" required />
                     <div className="subject-options">
                         <h2>Subject</h2>
                         <label>
@@ -105,7 +107,8 @@ const Form = () => {
                         <StarRating totalStars={5} value={rating} onStarClick={handleStarClick} onChange={(e) => setRating(e.target.value)}/>
                     </div>
 
-                    <textarea placeholder="  Message" name="message" cols="40" rows="4" value={message} onChange={(e) => setMessage(e.target.value)}></textarea>
+                    <textarea placeholder="Message" name="message" cols="40" rows="4" value={message} onChange={(e) => setMessage(e.target.value)}
+                      className="w-full p-2.5 mb-2.5 border border-gray bg-[#333333] text-foreground rounded box-border outline-none"></textarea>
                     <button type="submit" onClick = {() => sendMail()} className="btn btn-primary bg-gray">Submit</button>
 
                 </form>
