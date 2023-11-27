@@ -16,8 +16,7 @@ const Notification = () => {
         const twoWeeksAgoMilliseconds = timestampMilliseconds - 1209600000;
         const currentDate = new Date(timestampMilliseconds).toISOString();
         const twoWeeksAgo = new Date(twoWeeksAgoMilliseconds).toISOString();
-        console.log()
-
+        
         const { data, error } = await supabase
             .from('notification')
             .select('*')

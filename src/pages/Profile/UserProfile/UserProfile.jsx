@@ -56,10 +56,9 @@ export default function UserProfile() {
 
   useEffect(() => {
     isFollowing();
-    fetchNumberofPosts();
-    fetchUsername();
     fetchFollowers();
     fetchFollowings();
+    fetchUsername();
   }, [following, userData])
   
   const fetchUserPosts = async (username) => {

@@ -3,7 +3,6 @@ import { useState } from "react";
 
 export default function Carousel({ images, cover }) {
   // carousel component, takes in an array of image urls
-  cover = false
   const [currentIndex, setCurrentIndex] = useState(0)
   
   const prevSlide = () => {

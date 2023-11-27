@@ -414,14 +414,18 @@ export default function PostPage() {
         <div className="w-[850px] h-[650px] flex items-center">
           {/* render image carousel */}
           {postImages ? (
-            <Carousel images={postImages} cover={true}/>
+            <Carousel images={postImages} cover={false}/>
           ) : (<h1>An error has occured, please try again later.</h1>)}
           {/* banner with username, profile pic and date */}
           <section className="w-[450px] border border-gray h-full flex flex-col justify-between">
             <Link to={`/${username}`} className="h-[50px] border-b border-gray flex items-center justify-between p-3 hover:text-foreground/80 ease duration-150">
               <div className="flex items-center gap-2">
                 <div className="h-8 w-8 rounded-full overflow-hidden border border-gray">
-                  <img src={userData.profile_picture_url} className="object-cover h-full w-full"/>
+                  {userData.profile_picture_url ? (
+                    <img src={userData.profile_picture_url} className="object-cover h-full w-full"/>
+                  ) : (
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg" className="object-cover h-full w-full"/>
+                  )}
                 </div>
                 <h1 className="font-semibold text-sm">{username}</h1>
               </div>
