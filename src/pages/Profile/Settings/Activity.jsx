@@ -287,7 +287,7 @@ const Comment = ({ postId, user_id, image_url }) => {
  
   // Formatting + Buttons
   return (
-    <div className="page-container"> 
+    <div className="page-container ml-0 md:ml-64"> 
       <div className="content-container">
       <div className="profile-page">
         <br />
