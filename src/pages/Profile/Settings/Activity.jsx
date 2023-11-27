@@ -331,7 +331,7 @@ const Comment = ({ postId, user_id, image_url }) => {
               </span>
             </div>
             <>
-              <p className="comment-text">
+              <p className="comment-text1">
                 {comment.comment_text} 
                 {/* Commented On link */}
                 <div className='comment-on'>
