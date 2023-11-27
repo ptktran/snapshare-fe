@@ -7,7 +7,7 @@ export default function Modal({ isVisible, onClose, children, action, actionMsg,
     if (e.target.id === 'wrapper') onClose()
   }
   return (
-    <div className="fixed inset-0 bg-gray bg-opacity-50 backdrop-blur-xs flex justify-center items-center" id="wrapper" onClick={handleClose}>
+    <div className="fixed inset-0 bg-gray bg-opacity-50 backdrop-blur-xs flex justify-center items-center z-20" id="wrapper" onClick={handleClose}>
       <motion.div
         initial={{ scale: 0.8, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}

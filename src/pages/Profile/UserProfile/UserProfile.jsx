@@ -218,21 +218,21 @@ export default function UserProfile() {
 
   return (
     <>
-      <main className="ml-0 md:ml-64">
+      <main className="ml-0 md:ml-64 px-2 md:px-0">
         {/* header with user name and user info */}
-        <header className="w-full md:w-[800px] border-b border-gray m-auto flex justify-center gap-20 p-5">
-          <div className="p-5">
+        <header className="w-full md:w-[800px] border-b border-gray m-auto flex flex-col md:flex-row justify-center gap-3 py-5 md:gap-20 md:p-5">
+          <div className="p-0 md:p-5 w-full md:w-fit flex items-center">
             {userData.profile_picture_url ? (
-              <div className="w-[150px] h-[150px] rounded-full overflow-hidden">
+              <div className="w-[80px] h-[80px] md:w-[150px] md:h-[150px] rounded-full overflow-hidden">
                 <img src={userData.profile_picture_url} className="w-full h-full object-cover"/>
               </div>
             ) : (
               <img src="https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg" 
-                className="rounded-full w-[150px]" />
+                className="rounded-full w-[70px] md:w-[150px]" />
             )}
           </div>
-          <section className="w-full md:w-[450px] flex flex-col gap-5 py-5">
-            <div className="flex items-center gap-8">
+          <section className="w-full md:w-[450px] flex flex-col gap-4 md:gap-5 py-0 md:py-5">
+            <div className="flex flex-wrap justify-normal items-center gap-3 md:gap-8">
               <h1 className="font-medium text-xl">{userData.username}</h1>
               <div className="flex items-center gap-4">
                 {userData.user_id === user.id ? (
@@ -251,23 +251,23 @@ export default function UserProfile() {
               </div>
             </div>
             <div className="flex items-center gap-10">
-              <h1><b>{numberOfPosts}</b> posts</h1>
-              <button onClick={() => setShowFollowers(true)} className="hover:text-foreground/80 ease duration-150"><b>{followers ? followers.length : 0}</b> followers</button>
-              <button onClick={() => setShowFollowings(true)} className="hover:text-foreground/80 ease duration-150"><b>{followings ? followings.length : 0}</b> following</button>
+              <h1 className="text-sm md:text-base"><b>{numberOfPosts}</b> posts</h1>
+              <button onClick={() => setShowFollowers(true)} className="hover:text-foreground/80 ease duration-150 text-sm md:text-base"><b>{followers ? followers.length : 0}</b> followers</button>
+              <button onClick={() => setShowFollowings(true)} className="hover:text-foreground/80 ease duration-150 text-sm md:text-base"><b>{followings ? followings.length : 0}</b> following</button>
             </div>
             <div className="flex flex-col gap-2">
-              <h1>{userData.user_bio}</h1>
+              <h1 className="text-sm md:text-base">{userData.user_bio}</h1>
               <a href={userData.website} target="blank"
-                className="font-medium text-accent hover:underline w-fit"
+                className="font-medium text-accent hover:underline w-fit text-sm md:text-base"
                 >{userData.website}</a>
             </div>
           </section>
         </header>
         
         {/* rendering user posts */}
-        <section className="flex flex-wrap justify-start py-4 gap-4 w-[800px] m-auto">
+        <section className="flex flex-wrap justify-start pt-4 pb-8 gap-4 w-full md:w-[800px] m-auto">
           {userPosts.length >= 1 ? userPosts.map((post, index) => (
-            <Link to={`/post/${post.post_id}`} key={index} className="w-64 h-64 relative group overflow-hidden">
+            <Link to={`/post/${post.post_id}`} key={index} className="w-[130px] h-[130px] md:w-64 md:h-64 relative group overflow-hidden">
               {post.file_url && post.file_url[0] ? (
                 isImage(post.file_url[0]) ? (
                   <img src={post.file_url[0]} className="w-full h-full object-cover" alt="Post Thumbnail" />

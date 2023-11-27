@@ -72,16 +72,6 @@ export default function Settings() {
     signOut()
   }
 
-  // const test = async () => {
-  //   const data = await supabase.from('user_likes').select('post_id').eq('user_id', user.id)
-  //   const data2 = await supabase
-	// 			.from('likes')
-	// 			.select('like_count')
-	// 			.eq('post_id', 192)
-  //   console.log(data)
-  //   console.log(data2)
-  // }
-
   if (errorCode) {
     return <ErrorPage errorCode={errorCode} />
   } else if (loading) {
@@ -90,9 +80,9 @@ export default function Settings() {
 
   return (
     <>
-      <main className="ml-0 md:ml-64">
+      <main className="ml-0 md:ml-64 h-fit">
         {/* <button onClick={() => test()}>test</button> */}
-        <section className="flex flex-col justify-center w-[700px] py-8 m-auto">
+        <section className="flex flex-col justify-center w-full md:w-[700px] px-3 md:px-0 py-8 m-auto">
           <h1 className="text-lg font-bold mb-2">Account Info</h1>
           <div className="border border-gray w-full p-7">
             <div className="flex items-center gap-4 pb-2">
@@ -133,7 +123,7 @@ export default function Settings() {
             </div>
           </div>
         </section>
-        <section className="flex flex-col justify-center w-[700px] m-auto text-sm">
+        <section className="flex flex-col justify-center w-full md:w-[700px] px-3 md:px-0 m-auto text-sm">
           <h1 className="text-lg font-bold mb-2">Danger Zone</h1>
           <div className="flex items-center justify-between border border-gray w-full p-7">
             <div className="flex flex-col">

@@ -1,6 +1,5 @@
 import { useAuth, supabase } from "../../auth/Auth";
 import React, { useState, useEffect } from 'react';
-import './Home.css';
 import Carousel from "../../components/Carousel/Carousel";
 import { Link } from "react-router-dom";
 import { getDate } from "../../utils/DateFormatter";
@@ -92,7 +91,7 @@ export default function Home() {
 
  return (
   <>
-    <main className="ml-0 md:ml-64">
+    <main className="ml-0 md:ml-64 overflow-hidden">
       <div className="flex justify-center p-2 pb-[80px] md:p-9 w-full">
         <div className="flex flex-col w-full md:w-[500px] gap-4">
           <h1 className="text-3xl font-bold text-left">Home</h1>

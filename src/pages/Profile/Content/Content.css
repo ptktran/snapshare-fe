@@ -1,22 +1,9 @@
 /* Content.css */
-@media (min-width: 600px) {
-    .page-container {
-        margin-left: 16rem;
-    }
-}
-
-@media (min-width: 300) {
-    .page-container {
-        margin-left: 0;
-    }
-}
-
 .saved_posts_container {
     display: grid;
     grid-template-columns: repeat(3, 1fr); /* creates three columns with equal width */
     gap: 10px; /* sets the gap between grid items */
 }
-
 
 .page-container {
     height: 100vh; 
@@ -37,26 +24,13 @@
     display: flex;
     align-items: center; 
     justify-content: center; 
-    margin: 20px; /* Add margin for spacing */
     width: 100%;
     gap: 20px;
-}
-
-.profile-left {
-    text-align: center;
-    width: 350px;
-    word-wrap:break-word;
-    padding: 50px; /* Add padding to separate the content */
-    gap: 20px;
-    display: flex;
-    flex-direction: column;
 }
 
 .profile-image-container {
     border-radius: 50%; /* Make it circular */
     overflow: hidden; /* Hide overflow content (if any) */
-    width: 150px; /* Adjust the size as needed */
-    height: 150px; /* Adjust the size as needed */
     margin: 0 auto; /* Center the profile image horizontally */
 }
 
@@ -71,7 +45,6 @@
     padding: 10px; /* Add padding to separate the content */
     display: flex; /* Allow children to be aligned in a row */
     flex-direction: column; /* Stack the children vertically */
-    width: 350px;
 }
 
 /* Add black text on inputs */
@@ -97,12 +70,12 @@ input[type="url"],
 }
 
 .standout:hover {
-    background-color: #0056b3;
+    background-color: #3b82f6;
 }
 
 /* Update the website link style */
 .displayed-items a {
-    color: #0073e6; /* Light blue color */
+    color: #3b82f6; /* Light blue color */
     text-decoration: underline; /* Underline the link */
     cursor: pointer; /* Add pointer cursor on hover */
 }
@@ -147,22 +120,15 @@ input[type="url"],
 } 
 /* Updated CSS for the "Edit Profile" button */
 .edit-button {
-    background-color: #333;
+    background-color: #404040;
     color: #fff;
-    padding: 12px 24px;
-    font-size: 16px;
+    padding: 7px 10px;
+    font-size: 14px;
     border: none;
     border-radius: 6px;
     cursor: pointer;
 }
 
-/* Add a horizontal line that spans from the left to the right */
-.profile-line {
-    width: 100%;
-    height: 1px;
-    background-color: #ccc;
-    margin-top: 20px; /* Add margin to space it down */
-} /* Spacing for "Posts," "Saved," and "Tagged" buttons */
 .profile-buttons {
     display: flex;
     justify-content: space-between; /* Distribute the buttons horizontally */
@@ -171,11 +137,18 @@ input[type="url"],
 } .profile-button {
     background-color: transparent; /* Make buttons transparent */
     color: #ffffff; /* Text color */
-    padding: 10px; /* Adjust padding for button size */
+    padding: 8px; /* Adjust padding for button size */
     font-size: 15px; /* Increase the font size */
     border: none; /* Remove border */
     cursor: pointer;
     margin: 0 10px; /* Add horizontal margin for spacing between buttons */
+    border-radius: 10px;
+    transition: all ease 200ms;
+}
+.profile-button:hover {
+    background-color: #404040;
+    color: #89AAE6;
+    
 }
 
 
@@ -186,8 +159,6 @@ input[type="url"],
     left: 50%;
     display: none ;
     transform: translate(-50%, -50%) scale(1);
-    width: 700px;
-    height: 700px;
     padding: 20px 30px;
     background: #fff;
     color: #e21362;
@@ -199,30 +170,11 @@ input[type="url"],
 .posts {
     display: flex;
     flex-flow: wrap;
-    width: 500px;
-}
-
-.posts .post_container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    position: relative;
-    margin: 8px;
-
+    justify-content: stretch;
 }
 
 .post_container .post_content {
-    width: 150px;
-    height: 150px;
-    object-fit: cover;  
-}
-
-.post_container:hover{
-    background-color: #606060;
-    opacity: 0.5;
-    font-size: 25px;
-    font-weight: bold;
+    object-fit: cover; 
 }
 
 .popup .right {
@@ -240,7 +192,6 @@ input[type="url"],
 }
 
 .carousel_container{
-    width: 600px;
     margin: 15px;
     overflow: hidden;
     white-space: nowrap; /* Prevent images from wrapping */
@@ -272,7 +223,6 @@ input[type="url"],
 .popup input {
     border-color: #e21362;
     border-width: 1px;
-    width: 600px;
 }
 
 .popup button {
@@ -288,7 +238,6 @@ input[type="url"],
     padding: 5px;
     margin-left: 20px;
     text-align: center;
-    width: 600px;
     white-space: normal;
 }
 
