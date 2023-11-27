@@ -80,7 +80,7 @@ export default function Settings() {
 
   return (
     <>
-      <main className="ml-0 md:ml-64 h-fit">
+      <main className="ml-0 md:ml-64 mb-16 md:mb-0">
         {/* <button onClick={() => test()}>test</button> */}
         <section className="flex flex-col justify-center w-full md:w-[700px] px-3 md:px-0 py-8 m-auto">
           <h1 className="text-lg font-bold mb-2">Account Info</h1>
@@ -125,7 +125,7 @@ export default function Settings() {
         </section>
         
         <section className="flex flex-col justify-center w-full md:w-[700px] px-3 md:px-0 m-auto text-sm">
-          <section className="flex flex-col justify-center w-[700px] m-auto text-sm mb-8">
+          <section className="flex flex-col justify-center w-full md:w-[700px] m-auto text-sm mb-8">
             <h1 className="text-lg font-bold mb-2">Feedback Hub</h1>
             <div className="flex items-center justify-between border border-gray w-full p-4">
             <Link to="/Form" target="blank" className="text-accent text-sm hover:underline ease duration-150">Share your thoughts or Report issues</Link>
