@@ -25,6 +25,7 @@ export default function PostPage() {
   const [likes, setLikes] = useState(0);
   const [heartIcon, setHeartIcon] = useState("/icons/heart.svg");
   const [isLiked, setIsLiked] = useState(false);
+  const [currentUsername, setCurrentUsername] = useState("")
   const [showReportModal, setShowReportModal] = useState(false);
   const [reportReason, setReportReason] = useState('');
   const [customReason, setCustomReason] = useState('');
@@ -34,6 +35,7 @@ export default function PostPage() {
     if (user) {
       checkIfLiked();
     }
+    getUsername()
   },[postId])
   
   // fetch post and user info from backend
@@ -194,6 +196,46 @@ export default function PostPage() {
       console.log(error)
     }
   }
+
+  const getUsername = async () => {
+    const { data, error } = await supabase
+    .from('users123')
+    .select('username')
+    .eq('user_id', user.id)
+
+    if (data) {
+      setCurrentUsername(data[0].username)
+    }
+    if (error) {
+      console.log(error)
+    }
+  }
+
+  const sendEmail = async () => {
+    var message = "liked your post on Snapshare.";
+    var message2 = "Log into Snapshare to view your liked post.";
+    var subject = "Someone Liked Your Post!";
+    
+    const response = await fetch('http://localhost:3000/sendEmail', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ username: currentUsername, email: userData.email, message: message, message2: message2, subject: subject}),
+    })
+    if (response.status === 200) {
+      console.log("Email sent successfully")
+    }
+
+    const { error } = await supabase
+    .from('notification')
+    .insert([{user_id: user.id, interacter_id: userData.user_id, user_username: currentUsername, interacter_username: userData.username, profile_link: currentUsername, interaction_type: "like", post_link: `/post/${postId}`}])
+    .select()
+
+    if (error) {
+      console.log(error)
+    }
+  }
   
   // Get the posts likes from supabase
   const fetchLikes = async (postId) => {
@@ -209,7 +251,6 @@ export default function PostPage() {
       setLikes(data ? data.like_count : 0); 
     }
   };
-
 
   // Check if user liked and update the heart accordingly
   const checkIfLiked = async () => {
@@ -267,6 +308,7 @@ export default function PostPage() {
         setLikes(newLikes);
         setIsLiked(true);
         setHeartIcon("/icons/heart-filled.png");
+        sendEmail()
       }
     }
 
@@ -395,7 +437,11 @@ export default function PostPage() {
             <Link to={`/${username}`} className="hidden md:flex h-[50px] border-b border-gray items-center justify-between p-3 hover:text-foreground/80 ease duration-150">
               <div className="flex items-center gap-2">
                 <div className="h-8 w-8 rounded-full overflow-hidden border border-gray">
-                  <img src={userData.profile_picture_url} className="object-cover h-full w-full"/>
+                  {userData.profile_picture_url ? (
+                    <img src={userData.profile_picture_url} className="object-cover h-full w-full"/>
+                  ) : (
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg" className="object-cover h-full w-full"/>
+                  )}
                 </div>
                 <h1 className="font-semibold text-sm">{username}</h1>
               </div>

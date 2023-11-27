@@ -69,7 +69,7 @@ export default function Navbar() {
             <span className="hidden md:block">Create</span>
           </NavLink>
           <NavLink
-            to="/something"
+            to="/notifications"
             className={({ isActive }) =>
               isActive ? linkStyles.active : linkStyles.nonactive
             }
@@ -89,6 +89,10 @@ export default function Navbar() {
               <i class="bx bx-user"></i>
             </span>
             <span className="hidden md:block">Profile</span>
+          </NavLink>
+          <NavLink to="/youractivity" className={ ({ isActive }) => isActive ? linkStyles.active : linkStyles.nonactive }>
+            <span className="inline-flex items-center justify-center h-12 w-12 text-2xl md:text-xl text-foreground"><i class="bx bx-chart"></i></span>
+            <span className="hidden md:block"> Your Activity</span>
           </NavLink>
           <Link
             onClick={signOut}

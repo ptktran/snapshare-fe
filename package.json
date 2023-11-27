@@ -11,16 +11,22 @@
   },
   "dependencies": {
     "@heroicons/react": "^2.0.18",
+    "@react-email/button": "^0.0.11",
+    "@react-email/html": "^0.0.6",
     "@supabase/auth-ui-react": "^0.4.6",
     "@supabase/auth-ui-shared": "^0.1.8",
     "@supabase/supabase-js": "^2.38.4",
+    "axios": "^1.6.2",
+    "date-fns": "^2.30.0",
     "framer-motion": "^10.16.4",
+    "nodemailer": "^6.9.7",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-drag-drop-files": "^2.3.10",
     "react-dropzone": "^14.2.3",
     "react-hot-toast": "^2.4.1",
     "react-native-drop-zone": "^1.0.24",
+    "resend": "^2.0.0",
     "socket.io-client": "^4.7.2"
   },
   "devDependencies": {
@@ -33,6 +39,7 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.3",
     "postcss": "^8.4.31",
+    "react-error-overlay": "6.0.9",
     "react-router-dom": "^6.18.0",
     "tailwindcss": "^3.3.3",
     "vite": "^4.4.5"
