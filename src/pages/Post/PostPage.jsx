@@ -407,18 +407,34 @@ export default function PostPage() {
 
   return (
     <>
-      <main className="ml-0 md:ml-64 flex justify-center items-start pt-7">
+      <main className="ml-0 md:ml-64 flex justify-center items-start pt-7 px-2 md:px-0">
         <Toaster toastOptions={{
           duration: 2000,
         }}/>
-        <div className="w-[850px] h-[650px] flex items-center">
+        <div className="w-full flex-col md:flex-row md:w-[850px] md:h-[650px] flex items-center border border-gray">
+          <Link to={`/${username}`} className="flex w-full md:hidden h-[50px] border-b border-gray items-center justify-between p-3 hover:text-foreground/80 ease duration-150">
+            <div className="flex items-center gap-2">
+              <div className="h-8 w-8 rounded-full overflow-hidden border border-gray">
+                <img src={userData.profile_picture_url} className="object-cover h-full w-full"/>
+              </div>
+              <h1 className="font-semibold text-sm">{username}</h1>
+            </div>
+            <h1 className="text-xs font-light text-neutral-400">{getDate(postData.updated_at)}</h1>
+          </Link>
           {/* render image carousel */}
           {postImages ? (
-            <Carousel images={postImages} cover={false}/>
+            <>
+              <div className="hidden md:block">
+                <Carousel images={postImages} cover={true} />
+              </div>
+              <div className="block md:hidden">
+                <Carousel images={postImages} cover={false} />
+              </div>
+            </>
           ) : (<h1>An error has occured, please try again later.</h1>)}
           {/* banner with username, profile pic and date */}
-          <section className="w-[450px] border border-gray h-full flex flex-col justify-between">
-            <Link to={`/${username}`} className="h-[50px] border-b border-gray flex items-center justify-between p-3 hover:text-foreground/80 ease duration-150">
+          <section className="w-full md:w-[450px] h-full flex flex-col justify-between md:border-l border-gray border-b md:border-b-0 mb-12 md:mb-0">
+            <Link to={`/${username}`} className="hidden md:flex h-[50px] border-b border-gray items-center justify-between p-3 hover:text-foreground/80 ease duration-150">
               <div className="flex items-center gap-2">
                 <div className="h-8 w-8 rounded-full overflow-hidden border border-gray">
                   {userData.profile_picture_url ? (
@@ -432,87 +448,91 @@ export default function PostPage() {
               <h1 className="text-xs font-light text-neutral-400">{getDate(postData.updated_at)}</h1>
             </Link>
 
-            {/* rendering caption */}
-            <div className="h-full w-full text-sm flex-col flex gap-2 items-start justify-start p-3 overflow-y-auto">
-              <div className="flex gap-2 w-full pb-1.5">
-                <Link to={`/${username}`} className="h-8 w-8 flex-shrink-0 rounded-full overflow-hidden border border-gray">
-                  {userData.profile_picture_url ? (
-                    <img src={userData.profile_picture_url} className="w-full h-full object-cover"/>
-                  ) : (
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg" className="w-full h-full object-cover"/>
-                  )}
-                </Link>
-                <div className="leading-none w-full break-words">
-                  <Link to={`/${username}`} className="font-semibold text-sm hover:text-foreground/80 ease duration-150">{username}</Link>
-                  <h1 className="min-w-0">{postData.caption}</h1>
-                </div>
-              </div>
-              {comments.length !== 0 && comments.map((comment, index) => (
-                <div className="flex gap-2 w-full py-1.5" key={index}>
-                  <Link to={`/${comment.userData[0].username}`} className="h-8 w-8 flex-shrink-0 rounded-full overflow-hidden border border-gray">
-                    {comment.userData[0].profile_picture_url ? (
-                      <img src={comment.userData[0].profile_picture_url} className="w-full h-full object-cover"/>
+            <section className="flex h-full w-full flex-col-reverse md:flex-col overflow-y-auto">
+              {/* rendering caption */}
+              <div className="h-full w-full text-sm flex-col flex gap-2 items-start justify-start p-3 overflow-y-auto">
+                <div className="flex gap-2 w-full pb-1.5">
+                  <Link to={`/${username}`} className="h-8 w-8 flex-shrink-0 rounded-full overflow-hidden border border-gray">
+                    {userData.profile_picture_url ? (
+                      <img src={userData.profile_picture_url} className="w-full h-full object-cover"/>
                     ) : (
                       <img src="https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg" className="w-full h-full object-cover"/>
                     )}
                   </Link>
                   <div className="leading-none w-full break-words">
-                    <Link to={`/${comment.userData[0].username}`} className="flex justify-between items-center gap-2 font-semibold text-sm hover:text-foreground/80 ease duration-150">{comment.userData[0].username} <p className="text-xs font-light text-neutral-400">{getDate(comment.created_at)}</p></Link>
-                    {(comment.userData[0].user_id !== user.id || comment.id !== editingCommentId) && (
-                      <h1 className="min-w-0">{comment.comment_text}</h1>
-                    )}
-                    {comment.userData[0].user_id === user.id && (
-                      <div className="flex items-center gap-2 pt-1 text-neutral-400 font-semibold">
-                        {editingCommentId === comment.id ? (
-                          <div className="flex items-center flex-col">
-                            <textarea value={editingCommentText} onChange={(e) => setEditingCommentText(e.target.value)}
-                              className="bg-gray background w-full resize-none text-sm font-normal p-2 outline-none text-foreground rounded-lg"
-                            ></textarea>
-                            <div className="flex items-center gap-2 w-full">
-                              <button className="text-accent hover:text-accent/80 ease duration-150 text-xs" onClick={handlePostComment}>Confirm Edit</button>
-                              <button className="text-neutral-400 hover:text-neutral-400/80 duration-150 text-xs" onClick={handleCancelCommentEdit}>Cancel</button>
-                              <button onClick={() => handleCommentDelete(comment.id)} className="hover:text-neutral-500 ease duration-150 text-sm"><i className="bx bx-trash-alt"></i></button>
-                            </div>
-                          </div>
-                        ) : (
-                          <>
-                            <button className="hover:text-neutral-500 ease duration-150 text-xs" onClick={() => handleEditComment(comment.comment_text, comment.id)}>Edit</button>
-                            <button onClick={() => handleCommentDelete(comment.id)} className="hover:text-neutral-500 ease duration-150 text-sm"><i className="bx bx-trash-alt"></i></button>
-                          </>
-                        )}
-                      </div>
-                    )}
+                    <Link to={`/${username}`} className="font-semibold text-sm hover:text-foreground/80 ease duration-150">{username}</Link>
+                    <h1 className="min-w-0">{postData.caption}</h1>
                   </div>
                 </div>
-              ))}
-            </div>
-            
-            {/* Div for likes, date and report icon */}
-            <div className="flex justify-between items-start p-3 min-h-[60px] border-t border-gray">
-              <div className="flex flex-col">
-                {/* Like button and likes count */}
-                <div className="flex items-center">
-                  <button onClick={toggleLike}>
-                    <img src={heartIcon} className="w-7"/>
-                  </button>
-                  <span className="text-sm font-medium pl-2">{likes} likes</span>
-                </div>
-                {/* Date */}
-                <span className="text-xs font-light text-neutral-400 pt-1">{getDate(postData.updated_at)}</span>
+                {comments.length !== 0 && comments.map((comment, index) => (
+                  <div className="flex gap-2 w-full py-1.5" key={index}>
+                    <Link to={`/${comment.userData[0].username}`} className="h-8 w-8 flex-shrink-0 rounded-full overflow-hidden border border-gray">
+                      {comment.userData[0].profile_picture_url ? (
+                        <img src={comment.userData[0].profile_picture_url} className="w-full h-full object-cover"/>
+                      ) : (
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg" className="w-full h-full object-cover"/>
+                      )}
+                    </Link>
+                    <div className="leading-none w-full break-words">
+                      <Link to={`/${comment.userData[0].username}`} className="flex justify-between items-center gap-2 font-semibold text-sm hover:text-foreground/80 ease duration-150">{comment.userData[0].username} <p className="text-xs font-light text-neutral-400">{getDate(comment.created_at)}</p></Link>
+                      {(comment.userData[0].user_id !== user.id || comment.id !== editingCommentId) && (
+                        <h1 className="min-w-0">{comment.comment_text}</h1>
+                      )}
+                      {comment.userData[0].user_id === user.id && (
+                        <div className="flex items-center gap-2 pt-1 text-neutral-400 font-semibold">
+                          {editingCommentId === comment.id ? (
+                            <div className="flex items-center flex-col">
+                              <textarea value={editingCommentText} onChange={(e) => setEditingCommentText(e.target.value)}
+                                className="bg-gray background w-full resize-none text-sm font-normal p-2 outline-none text-foreground rounded-lg"
+                              ></textarea>
+                              <div className="flex items-center gap-2 w-full">
+                                <button className="text-accent hover:text-accent/80 ease duration-150 text-xs" onClick={handlePostComment}>Confirm Edit</button>
+                                <button className="text-neutral-400 hover:text-neutral-400/80 duration-150 text-xs" onClick={handleCancelCommentEdit}>Cancel</button>
+                                <button onClick={() => handleCommentDelete(comment.id)} className="hover:text-neutral-500 ease duration-150 text-sm"><i className="bx bx-trash-alt"></i></button>
+                              </div>
+                            </div>
+                          ) : (
+                            <>
+                              <button className="hover:text-neutral-500 ease duration-150 text-xs" onClick={() => handleEditComment(comment.comment_text, comment.id)}>Edit</button>
+                              <button onClick={() => handleCommentDelete(comment.id)} className="hover:text-neutral-500 ease duration-150 text-sm"><i className="bx bx-trash-alt"></i></button>
+                            </>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
               </div>
+            
+              <section>
+                {/* Div for likes, date and report icon */}
+                <div className="flex justify-between items-start p-3 min-h-[60px] border-t border-gray">
+                  <div className="flex flex-col">
+                    {/* Like button and likes count */}
+                    <div className="flex items-center">
+                      <button onClick={toggleLike}>
+                        <img src={heartIcon} className="w-7"/>
+                      </button>
+                      <span className="text-sm font-medium pl-2">{likes} likes</span>
+                    </div>
+                    {/* Date */}
+                    <span className="text-xs font-light text-neutral-400 pt-1">{getDate(postData.updated_at)}</span>
+                  </div>
 
-              {/* Report button */}
-              <button onClick={toggleReportModal} className="report-flag-btn">
-                <img src="/icons/report.png" alt="Report" />
-              </button>
-            </div>
+                  {/* Report button */}
+                  <button onClick={toggleReportModal} className="report-flag-btn">
+                    <img src="/icons/report.png" alt="Report" />
+                  </button>
+                </div>
 
-            {/* Comment input section */}
-            <div className="flex items-center p-2.5 min-h-[50px]">
-              <input placeholder="Add a comment..." value={commentText} onChange={(e) => setCommentText(e.target.value)} className="bg-background w-full text-sm p-1 outline-none"></input>
-              <button onClick={handlePostComment} disabled={!commentText.trim() || editingCommentId !== null} 
-                className={`text-accent font-medium text-sm hover:text-accent/80 ease duration-150 ml-2 ${(!commentText.trim() || editingCommentId !== null) && 'text-gray hover:text-gray'}`}>Post</button>
-            </div>
+                {/* Comment input section */}
+                <div className="flex items-center p-2.5 min-h-[50px] border-b md:border-b-0 border-gray">
+                  <input placeholder="Add a comment..." value={commentText} onChange={(e) => setCommentText(e.target.value)} className="bg-background w-full text-sm p-1 outline-none"></input>
+                  <button onClick={handlePostComment} disabled={!commentText.trim() || editingCommentId !== null} 
+                    className={`text-accent font-medium text-sm hover:text-accent/80 ease duration-150 ml-2 ${(!commentText.trim() || editingCommentId !== null) && 'text-gray hover:text-gray'}`}>Post</button>
+                </div>
+              </section>
+            </section>
           </section>
         </div>
       </main>

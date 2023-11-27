@@ -41,18 +41,18 @@ export default function Hashtag() {
     return (
       <>
         <main className="ml-0 md:ml-64">
-          <div className="content-container">
-            <div className="content-container p-9 block">
+          <div className="w-full">
+            <div className="content-container p-3 md:p-9 block">
               {/* header */}
-              <h1 className="text-3xl font-bold text-center">Hashtag Results Page</h1>
-              <br />
-              <h1 className="text-xl font-bold">Posts with #{hashtag}</h1>
-  
+              <div className="flex flex-col pt-4 w-full md:w-[800px] m-auto">
+                <h1 className="text-3xl font-bold text-center py-2">Hashtag Results Page</h1>
+                <h1 className="text-xl font-bold">Posts with #{hashtag}</h1>
+              </div>
               {/* rendering user posts */}
-              <section className="flex flex-wrap justify-start py-4 gap-4 w-[800px] m-auto">
+              <section className="flex flex-wrap justify-between py-4 gap-4 w-full md:w-[800px] m-auto">
                 {filteredPosts.length >= 1 ? (
                   filteredPosts.map((post, index) => (
-                    <Link to={`/post/${post.post_id}`} key={post.post_id} className="w-64 h-64 relative group overflow-hidden">
+                    <Link to={`/post/${post.post_id}`} key={post.post_id} className="w-32 h-32 md:w-64 md:h-64 relative group overflow-hidden">
                         {post.file_url && post.file_url[0] ? (
                             isImage(post.file_url[0]) ? (
                             <img src={post.file_url[0]} className="w-full h-full object-cover" alt="Post Thumbnail" />
